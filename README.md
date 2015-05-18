@@ -1,2 +1,2 @@
 # mymovie
-Webap to track movie releases
+Webapp to track movie releases
