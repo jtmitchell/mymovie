@@ -5,7 +5,9 @@ install: pip install -r requirements/test.txt
 cache:
   directories:
   - $HOME/.cache/pip
-script: python manage.py test
+script: coverage run --source=. manage.py test
+after_success:
+  coveralls
 env:
 - DJANGO_SETTINGS_MODULE=app.settings
 notifications:
