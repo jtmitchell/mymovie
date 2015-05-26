@@ -16,7 +16,6 @@ import os
 from os.path import abspath, join, dirname
 
 from django.core.exceptions import ImproperlyConfigured
-from django.conf.global_settings import STATICFILES_FINDERS
 
 
 def get_env_variable(var_name, default=None):
@@ -36,7 +35,7 @@ def get_env_variable(var_name, default=None):
 
 # Build paths inside the project like this: path_root('somefolder', 'somefile')
 path_here = lambda *x: abspath(join(abspath(dirname(__file__)), *x))
-PROJECT_ROOT = path_here("..")
+PROJECT_ROOT = path_here("../..")
 path_root = lambda *x: abspath(join(abspath(PROJECT_ROOT), *x))
 
 
@@ -139,7 +138,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = path_root('media')
-STATIC_ROOT = path_root('static')
+STATIC_ROOT = path_root('assets')
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',

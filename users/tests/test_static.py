@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.test.client import Client
+import os
+
+from django.contrib.staticfiles import finders
+from django.test import TestCase, Client
 
 
-class TestStatic(StaticLiveServerTestCase):
+class TestStatic(TestCase):
     """
     Ensure we have the default avatar image.
     """
@@ -11,5 +13,6 @@ class TestStatic(StaticLiveServerTestCase):
         self.client = Client()
 
     def test_default_avatar(self):
-        response = self.client.get('/static/users/images/avatar-default.png')
-        self.assertEqual(response.status_code, 200)
+        file_path = finders.find('users/images/avatar-default.png')
+        self.assertIsNotNone(file_path, 'Failed to find avatar-default.png')
+        self.assertTrue(os.path.exists(file_path))

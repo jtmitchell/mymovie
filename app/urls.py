@@ -22,12 +22,14 @@ urlpatterns = [
         RedirectView.as_view(
             url='/static/app/favicon.png',
             permanent=False,
-            )),
+            ),
+        name='favicon'),
     url(r'^robots\.txt$',
         RedirectView.as_view(
             url='/static/app/robots.txt',
             permanent=False,
-            )),
+            ),
+        name='robots'),
 
     url(r'^api/', include('users.urls', namespace='api')),
 
