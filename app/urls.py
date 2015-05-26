@@ -15,7 +15,24 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
+    url(r'^favicon\.ico$',
+        RedirectView.as_view(
+            url='/static/app/favicon.png',
+            permanent=False,
+            )),
+    url(r'^robots\.txt$',
+        RedirectView.as_view(
+            url='/static/app/robots.txt',
+            permanent=False,
+            )),
+
+    url(r'^api/', include('users.urls', namespace='api')),
+
+    url(r'^api-auth',
+        include('rest_framework.urls', namespace='rest_framework')),
+
     url(r'^admin/', include(admin.site.urls)),
 ]

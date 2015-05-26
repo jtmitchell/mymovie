@@ -1,0 +1,6 @@
+-r base.txt
+
+# Stackato cloud setup
+django-stackato==1.0
+dj-static==0.0.6
+gunicorn==19.1.1
