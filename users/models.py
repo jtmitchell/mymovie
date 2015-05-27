@@ -3,6 +3,10 @@ from custom_user.models import AbstractEmailUser
 from django.conf import settings
 from django.db import models
 
+from django.core.files.storage import get_storage_class
+
+static_storage = get_storage_class(settings.STATICFILES_STORAGE)()
+
 
 class EmailUser(AbstractEmailUser):
     name = models.CharField('Name', max_length=255, blank=True, null=True)
@@ -28,4 +32,13 @@ class UserProfile(models.Model):
         settings.AUTH_USER_MODEL,
         related_name='profile'
         )
-    avatar = models.URLField()  # use the image from social login
+
+    # use the image from social login
+    avatar = models.URLField()
+
+    @property
+    def avatar_url(self):
+        if self.avatar:
+            return self.avatar.url
+        else:
+            return static_storage.url('users/images/avatar-default.png')
