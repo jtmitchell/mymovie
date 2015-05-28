@@ -66,6 +66,7 @@ INSTALLED_APPS = (
 
     'app',
     'users',
+    'movies',
 )
 
 MIDDLEWARE_CLASSES = (
