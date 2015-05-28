@@ -18,6 +18,8 @@ deploy:
   provider: heroku
   api_key:
     secure: lFCZcDYZhZkhGoU4ncrrBO/7PSUyEYcObkS5gIzPIBAPOQqlNgoCsQs55U+Mh0eSiYUtu6xUUGWafcnRJc/Ej8mRNtud9lUOLKX5R4Tq4nK7K4g2DELBwOP6luEGflndYM/Vm3VMHfRjzTqad81FeS6Zz2iwH4dhjNpgdm8NGsCBY6ezafZ9e4vFasOgGKOG9Ynse6RoQP0MpjGyLP0udZcCpXA6Da7AIEi/+0u0uzgpmEQCIWmZC6A+Ghu7g329ZtQM1zD9Eeqq4SP4Q2b4lQC+TI4u2U5k9FOsQhXQNSs61OFpb73Sa01jcWhwdMP1G1gp0BeZBP8K345ChS65z5sNFli+svkRX7fUHxr5qIv4V+Q9Ay8teCyqU/3cMG9WR+pENHSv5Ho9Laz1ZxYcl8FPRtnnSLSRkvcCZi0L5pf25Nr1fas0hBSPTF4k2R00Au9ci2n/Nsx8g2dR6ix/KCxJS1fBiFh9eMkCMsg3UV7yfCw3VOp9l//BKV/NSCKof8pwIolRNJcQFdG2TBP0CmxGkN/iPp6DD+wIWno72z/kibSPMx/PlCM1K9B6j/KES9rSlJKlLRY1HLmSfJLpm/mLi1Dsu1eahfhGx1KK3sNTVcnLs+girXcwulMZvvmr9lLdIraQ/aO22UfMrQpkQTLkXm1wsOKLPf3Pr8qFqJo=
-  on: master
+  on: 
+    branch: master
+    python: '3.4'
   app: mymovie-api
   
