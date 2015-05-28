@@ -1,0 +1,56 @@
+FORMAT: 1A
+HOST: http://api.mymovie.maungawhau.net.nz/api/v1
+
+# MyMovie
+
+MyMovie is an API for adding movies to a watchlist.
+
+# Group Authentication
+
+Resources related to users of the system.
+
+Login relies on authorising with a social network, and passing back
+a token to use to get user details.
+
+The system will return a JWT token, which must be passed back in an
+Authorization header.
+
+## Login [/auth/login]
+
+Login
+
+### Login with email and password [POST]
+
++ Request (application/json)
+
+        {
+            "email": "test@example.com",
+            "password": "password"
+        }
+        
++ Response 201 (application/json)
+
+        { 
+            "token": "<jwt token>"
+        }
+
+## Users [/users/me]
+
+User details.
+
+### Get detail for current user [GET]
+
++ Request(application/json)
+
+    + Headers
+
+            Authorization: JWT <token>
+    
++ Response 201 (application/json)
+
+        {
+            "id": 1,
+            "email": "james@example.com",
+            "name": "James Mitchell",
+            "avatar": "http://www.example.com/avatar.jpg"
+        }
