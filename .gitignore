@@ -5,6 +5,7 @@
 .env
 
 db.sqlite3
+Procfile.dev
 
 /assets
 /media
