@@ -130,6 +130,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+# AngularJS likes to leave off the trailing slash
+APPEND_SLASH = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/

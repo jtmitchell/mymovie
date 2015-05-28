@@ -9,8 +9,8 @@ router.include_format_suffixes = False
 router.register(r'v1/users', UserViewSet, base_name='user')
 
 auth_patterns = patterns('',
-                         url(r'^login/$', 'rest_framework_jwt.views.obtain_jwt_token', name="login"),
-                         url(r'^token-refresh/$', 'rest_framework_jwt.views.refresh_jwt_token', name='token_refresh'),
+                         url(r'^login$', 'rest_framework_jwt.views.obtain_jwt_token', name="mylogin"),
+                         url(r'^token-refresh$', 'rest_framework_jwt.views.refresh_jwt_token', name='token_refresh'),
                          )
 
 urlpatterns = patterns('',
