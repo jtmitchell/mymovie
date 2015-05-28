@@ -2,5 +2,3 @@
 
 # Stackato cloud setup
 django-stackato==1.0
-dj-static==0.0.6
-waitress==0.8.9

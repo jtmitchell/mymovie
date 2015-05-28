@@ -137,7 +137,9 @@ APPEND_SLASH = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/static/'
+# Use the STATIC_HOST env to setup CDN hosting
+# http://whitenoise.evans.io/en/latest/django.html#instructions-for-amazon-cloudfront
+STATIC_URL = get_env_variable('DJANGO_STATIC_HOST', '') + '/static/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = path_root('media')
