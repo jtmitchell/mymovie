@@ -60,7 +60,7 @@ class TestUserApi(TokenTestCase):
 
     def test_get_info(self):
         """Call the get info endpoint"""
-        user = EmailUserFactory.create()
+        user = EmailUserFactory.create()  # suppress @UndefinedVariable
 
         auth = 'JWT {}'.format(self.create_token(user))
 
