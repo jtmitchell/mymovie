@@ -3,9 +3,19 @@ HOST: http://api.mymovie.maungawhau.net.nz/api/v1
 
 # MyMovie
 
-MyMovie is an API for adding movies to a watchlist.
+MyMovie is a web app for adding movies to a watchlist.
+The server-side API provides endpoints for manipulating the items in a 
+watchlist - which is a list of associations between the user, a movie,
+and what notifications they wish to receive.
 
-# Group Authentication
+Actions on users will be very minimal, and authentication will be via
+social networks. Once authenticated with a social network the system will 
+retrieve and use name and avatar from the network.
+
+The frontend UI is expected to search for movies directly on 3rd party services,
+and use the movie ID when creating the watch list.
+
+# Group Users and Authentication
 
 Resources related to users of the system.
 
@@ -17,7 +27,9 @@ Authorization header.
 
 ## Login [/auth/login]
 
-Login
+User login.
+
+Depreciated in favour of social authentication.
 
 ### Login with email and password [POST]
 
@@ -40,13 +52,13 @@ User details.
 
 ### Get detail for current user [GET]
 
-+ Request(application/json)
++ Request (application/json)
 
     + Headers
 
             Authorization: JWT <token>
     
-+ Response 201 (application/json)
++ Response 200 (application/json)
 
         {
             "id": 1,
@@ -54,3 +66,135 @@ User details.
             "name": "James Mitchell",
             "avatar": "http://www.example.com/avatar.jpg"
         }
+
+# Group Movies and Watchlist
+
+## Movies [/movies/{id}]
+
+Resource for a movie.
+
++ Model (application/json)
+        
+        {
+            "id": 1,
+            "name": "Movie Name",
+            "poster": "<url>"
+        }
+
+### Retrieve a movie [GET]
+
++ Response 200 (application/json)
+
+        [Movies][]
+    
+## Watchlist [/watchlists/{id}]
+
+Resource for watchlists.
+
++ Model (application/json)
+
+        {
+            "id": 1,
+            "movie":
+                {
+                    "id": 1,
+                    "name": "Movie Name",
+                    "poster": "<url>"
+                },
+            "notifications":
+                [
+                    {
+                        "id": 1,
+                        "type": "Cinema",
+                        "notified": false,
+                        "notified_date": ""
+                    }
+                ]
+        }
+
+### Retrieve watchlists [GET]
+
++ Headers
+
+        Authorization: JWT <token>
+    
++ Response 200 (application/json)
+
+        [Watchlist][]
+    
+### Create watchlist [POST]
+
+    
++ Request (application/json)
+
+        + Headers
+        
+                Authorization: JWT <token>
+
+        {
+            "movie": 1,
+            "notifications":
+                [
+                    "Cinema", "Rental", "Streaming"
+                ]
+        }
+        
++ Response 201 (application/json)
+
+        [Watchlist][]
+
+### Update watchlist [PUT]
+
++ Headers
+
+        Authorization: JWT <token>
+    
++ Response 200 (application/json)
+
+        [Watchlist][]
+
+### Delete watchlist [DELETE]
+
++ Headers
+
+        Authorization: JWT <token>
+    
++ Response 204 (application/json)
+
+## Notification [/watchlists/{list_id}/notifications/{id}]
+
++ Model (application/json)
+
+        {
+            "id": 1,
+            "type": "Cinema",
+            "notified": false,
+            "notified_date": ""
+        }
+
+### Retrieve [GET]
++ Headers
+
+        Authorization: JWT <token>
+    
++ Response 200 (application/json)
+        
+        [Notification][]
+        
+### Update [PUT]
+
++ Headers
+
+        Authorization: JWT <token>
+    
++ Response 200 (application/json)
+
+        [Notification][]
+
+### Delete [DELETE]
+
++ Headers
+
+        Authorization: JWT <token>
+    
++ Response 204 (application/json)
