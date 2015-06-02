@@ -15,6 +15,20 @@ retrieve and use name and avatar from the network.
 The frontend UI is expected to search for movies directly on 3rd party services,
 and use the movie ID when creating the watch list.
 
+# Group Configuration
+
+Resource with configuration data for the client,
+such as
+- notification types
+- client id for social network auth
+
+## Configuration [/config]
+
+### Retrieve Configuration [GET]
+
++ Response 200 (application/json)
+
+
 # Group Users and Authentication
 
 Resources related to users of the system.
@@ -40,7 +54,7 @@ Depreciated in favour of social authentication.
             "password": "password"
         }
 
-+ Response 201 (application/json)
++ Response 200 (application/json)
 
         {
             "token": "<jwt token>"
@@ -53,9 +67,9 @@ User details.
 ### Get detail for current user [GET]
 
 + Request (application/json)
-
+    
     + Headers
-
+    
             Authorization: JWT <token>
 
 + Response 200 (application/json)
@@ -67,7 +81,7 @@ User details.
             "avatar": "http://www.example.com/avatar.jpg"
         }
 
-# Group Movies and Watchlist
+# Group Movies and Watchlists
 
 ## Movies [/movies/{id}]
 
@@ -83,9 +97,10 @@ Resource for a movie.
 
 ### Retrieve a movie [GET]
 
-+ Response 200 (application/json)
++ Response 200
 
-        [Movies][]
+    [Movies][]
+        
 
 ## Watchlist [/watchlists/{id}]
 
@@ -114,50 +129,60 @@ Resource for watchlists.
 
 ### Retrieve watchlists [GET]
 
-+ Headers
++ Request (application/json)
 
-        Authorization: JWT <token>
+    + Headers
 
-+ Response 200 (application/json)
+            Authorization: JWT <token>
 
-        [Watchlist][]
++ Response 200
+
+    [Watchlist][]
 
 ### Create watchlist [POST]
 
 
 + Request (application/json)
 
-        + Headers
+    + Headers
 
-                Authorization: JWT <token>
+            Authorization: JWT <token>
 
-        {
-            "movie": 1,
-            "notifications":
-                [
-                    "Cinema", "Rental", "Streaming"
-                ]
-        }
+    + Body
+    
+            {
+                "movie": 1,
+                "notifications":
+                    [
+                        "Cinema", "Rental", "Streaming"
+                    ]
+            }
 
-+ Response 201 (application/json)
++ Response 201
 
-        [Watchlist][]
+    [Watchlist][]
 
 ### Update watchlist [PUT]
 
-+ Headers
++ Request (application/json)
 
-        Authorization: JWT <token>
+    + Headers
 
-+ Response 200 (application/json)
+            Authorization: JWT <token>
 
-        [Watchlist][]
++ Response 200
+
+    [Watchlist][]
+
 
 ### Delete watchlist [DELETE]
 
-+ Headers
++ Request (application/json)
 
-        Authorization: JWT <token>
+    + Headers
+
+            Authorization: JWT <token>
+
 
 + Response 204 (application/json)
 
@@ -177,41 +202,50 @@ Resource for watchlists.
 
 + Request (application/json)
 
-        + Headers
+    + Headers
 
-                Authorization: JWT <token>
+            Authorization: JWT <token>
 
-        {
-            "notification": "Cinema"
-        }
+    + Body
 
-+ Response 201 (application/json)
+            {
+                "notification": "Cinema"
+            }
 
-        [Notification][]
++ Response 201
+
+    [Notification][]
 
 ### Retrieve [GET]
-+ Headers
 
-        Authorization: JWT <token>
++ Request (application/json)
 
-+ Response 200 (application/json)
+    + Headers
 
-        [Notification][]
+            Authorization: JWT <token>
+
++ Response 200
+
+    [Notification][]
 
 ### Update [PUT]
 
-+ Headers
++ Request (application/json)
 
-        Authorization: JWT <token>
+    + Headers
 
-+ Response 200 (application/json)
+            Authorization: JWT <token>
 
-        [Notification][]
++ Response 200
+
+    [Notification][]
 
 ### Delete [DELETE]
 
-+ Headers
++ Request (application/json)
 
-        Authorization: JWT <token>
+    + Headers
+
+            Authorization: JWT <token>
 
 + Response 204 (application/json)
