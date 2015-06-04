@@ -24,7 +24,7 @@ such as
 
 ## Configuration [/config]
 
-### Retrieve Configuration [GET]
+### Retrieve [GET]
 
 + Response 200 (application/json)
 
@@ -64,7 +64,7 @@ Depreciated in favour of social authentication.
 
 User details.
 
-### Get detail for current user [GET]
+### Retrieve [GET]
 
 + Request (application/json)
     
@@ -83,28 +83,39 @@ User details.
 
 # Group Movies and Watchlists
 
-## Movies [/movies/{id}]
+## Movie [/movie/{id}]
 
 Resource for a movie.
 
+**Note**: this is where a search endpoint would allow us to search and add
+movies from the client - but we want search to use a 3rd party API, and to just
+tell us what the movie details are.
+
+
++ Parameters
+    + id: 1 (number) - Unique identifier for a movie
+        
 + Model (application/json)
 
         {
             "id": 1,
-            "name": "Movie Name",
-            "poster": "<url>"
+            "name": "Star Trek",
+            "poster": "http://ia.media-imdb.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg"
         }
 
-### Retrieve a movie [GET]
+### Retrieve [GET]
 
 + Response 200
 
-    [Movies][]
+    [Movie][]
         
 
 ## Watchlist [/watchlists/{id}]
 
 Resource for watchlists.
+
++ Parameter
+        + id: 1 (number) - Unique identifier for a watchlist
 
 + Model (application/json)
 
@@ -113,8 +124,8 @@ Resource for watchlists.
             "movie":
                 {
                     "id": 1,
-                    "name": "Movie Name",
-                    "poster": "<url>"
+                    "name": "Star Trek",
+                    "poster": "http://ia.media-imdb.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg"
                 },
             "notifications":
                 [
@@ -127,7 +138,7 @@ Resource for watchlists.
                 ]
         }
 
-### Retrieve watchlists [GET]
+### Retrieve [GET]
 
 + Request (application/json)
 
@@ -139,7 +150,7 @@ Resource for watchlists.
 
     [Watchlist][]
 
-### Create watchlist [POST]
+### Create [POST]
 
 
 + Request (application/json)
@@ -151,7 +162,12 @@ Resource for watchlists.
     + Body
     
             {
-                "movie": 1,
+                "movie": 
+                    {
+                        "name": "Star Trek",
+                        "service": "omdb",
+                        "service_id": "1"
+                    },
                 "notifications":
                     [
                         "Cinema", "Rental", "Streaming"
@@ -162,7 +178,7 @@ Resource for watchlists.
 
     [Watchlist][]
 
-### Update watchlist [PUT]
+### Update [PUT]
 
 + Request (application/json)
 
@@ -175,7 +191,7 @@ Resource for watchlists.
     [Watchlist][]
 
 
-### Delete watchlist [DELETE]
+### Delete [DELETE]
 
 + Request (application/json)
 
@@ -186,7 +202,49 @@ Resource for watchlists.
 
 + Response 204 (application/json)
 
+## Watchlist Collection [/watchlists]
+
+Resource for a list of user watchlists.
+
++ Model
+        [
+            {
+                "id": 1,
+                "movie":
+                    {
+                        "id": 1,
+                        "name": "Star Trek",
+                        "poster": "http://ia.media-imdb.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg"
+                    },
+                "notifications":
+                    [
+                        {
+                            "id": 1,
+                            "type": "Cinema",
+                            "notified": false,
+                            "notified_date": ""
+                        }
+                    ]
+            }
+        ]
+
+### List [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: JWT <token>
+
++ Response 200
+       [Watchlist Collection][]
+        
+
 ## Notification [/watchlists/{list_id}/notifications/{id}]
+
++ Parameters
+    + id: 1 (number) - Unique identifier for a notification
+    + list_id: 1 (number) - Unique identifier for the watchlist
 
 + Model (application/json)
 
@@ -249,3 +307,23 @@ Resource for watchlists.
             Authorization: JWT <token>
 
 + Response 204 (application/json)
+
+## Notification Collection [/watchlists/{list_id}/notifications]
+
+Resource for a list of notifications on a watchlist.
+
++ Parameters
+    + list_id: 1 (number) - Unique identifier for the watchlist
+
++ Model (application/json)
+
+        [
+            {
+                "id": 1,
+                "type": "Cinema",
+                "notified": false,
+                "notified_date": ""
+            }
+        ]
+
+

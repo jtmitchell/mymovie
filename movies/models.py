@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from jsonfield import JSONField
 
 from users.models import EmailUser
 
@@ -16,6 +17,8 @@ class Movie(models.Model):
     """Minimal amount of data for a Movie."""
     name = models.CharField(max_length=255, db_index=True)
     poster = models.URLField(max_length=255, blank=True, null=True)
+    year = models.IntegerField(verbose_name='Year of Release',
+                               db_index=True, blank=True, null=True)
     subscribers = models.ManyToManyField(EmailUser, through='Watchlist')
 
     class Meta:
@@ -32,6 +35,8 @@ class ServiceMovie(models.Model):
     service_id = models.CharField(max_length=50, db_index=True)
     service = models.CharField(max_length=10, db_index=True,
                                choices=SERVICE_CHOICES, default=SERVICE_OMDB)
+    service_data = JSONField(null=True, blank=True)
+    updated = models.DateField(null=True, blank=True, db_index=True)
 
     class Meta:
         unique_together = ('service_id', 'service')
