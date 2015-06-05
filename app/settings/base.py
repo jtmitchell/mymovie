@@ -62,6 +62,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'social.apps.django_app.default',
 
     'app',
     'users',
@@ -78,6 +79,35 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
+
+# Social and standard django authentication
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GooglePlusAuth',
+    'social.backends.twitter.TwitterOAuth',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'social.pipeline.social_auth.associate_by_email',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+    'users.social.load_avatar',
+)
+
+# Client keys for social auth
+# expect these to come from the environment
+SOCIAL_AUTH_GOOGLE_PLUS_KEY = get_env_variable('GOOGLE_PLUS_KEY', '')
+SOCIAL_AUTH_GOOGLE_PLUS_SECRET = get_env_variable('GOOGLE_PLUS_SECRET', '')
+SOCIAL_AUTH_TWITTER_KEY = get_env_variable('TWITTER_KEY', '')
+SOCIAL_AUTH_TWITTER_SECRET = get_env_variable('TWITTER_SECRET', '')
+
 
 ROOT_URLCONF = 'app.urls'
 
