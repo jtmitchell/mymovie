@@ -1,34 +1,18 @@
-from custom_user.admin import EmailUserAdmin
+# -*- coding: utf-8 -*-
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.admin import UserAdmin
 
-from utils.actions import export_as_csv_action
-
-from .models import UserProfile, EmailUser
+from .models import UserProfile
+from django.contrib.auth import get_user_model
 
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
+    can_delete = False
 
 
-class UserAdmin(EmailUserAdmin):
-    fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        (_('Details'), {'fields': ('name',)}),
-        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
-                                       'groups', 'user_permissions')}),
-    )
-
-    list_display = ('email', 'name', 'is_staff', 'last_login')
-    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
-    search_fields = ('email', 'name',)
+class UserAdmin(UserAdmin):
     inlines = (UserProfileInline,)
-    actions = [
-        export_as_csv_action(
-            "Export selection to CSV file",
-            fields=list_display, header=True, force_fields=True
-            ),
-        ]
 
-admin.site.register(EmailUser, UserAdmin)
+admin.site.unregister(get_user_model())
+admin.site.register(get_user_model(), UserAdmin)

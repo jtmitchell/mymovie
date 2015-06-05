@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
-
-from users.models import EmailUser
 
 
 SERVICE_OMDB = 'omdb'
@@ -19,7 +18,8 @@ class Movie(models.Model):
     poster = models.URLField(max_length=255, blank=True, null=True)
     year = models.IntegerField(verbose_name='Year of Release',
                                db_index=True, blank=True, null=True)
-    subscribers = models.ManyToManyField(EmailUser, through='Watchlist')
+    subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                         through='Watchlist')
 
     class Meta:
         ordering = ('name',)
@@ -52,7 +52,7 @@ class Watchlist(models.Model):
     The Notifications requested are linked to this model.
     """
     movie = models.ForeignKey(Movie)
-    user = models.ForeignKey(EmailUser)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     def __str__(self):
         return '{0}/{1}'.format(self.movie.name, self.user.name_or_email)

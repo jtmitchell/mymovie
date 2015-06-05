@@ -61,7 +61,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'custom_user',
     'rest_framework',
 
     'app',
@@ -116,7 +115,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'users.EmailUser'
+AUTH_USER_MODEL = 'auth.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

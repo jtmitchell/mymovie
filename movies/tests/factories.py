@@ -4,7 +4,7 @@ from factory import fuzzy
 from faker import Factory as faker
 
 from movies import models
-from users.tests.factories import EmailUserFactory
+from users.tests.factories import UserFactory
 
 
 fake = faker.create()
@@ -35,7 +35,7 @@ class WatchlistFactory(factory.DjangoModelFactory):
         model = models.Watchlist
 
     movie = factory.SubFactory(MovieFactory)
-    user = factory.SubFactory(EmailUserFactory)
+    user = factory.SubFactory(UserFactory)
 
 
 class NotificationFactory(factory.DjangoModelFactory):
