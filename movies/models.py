@@ -59,13 +59,15 @@ class Watchlist(models.Model):
 
 
 NOTIFY_CINEMA = 0
-NOTIFY_RENTAL = 1
-NOTIFY_RETAIL = 2
+NOTIFY_RETAIL = 1
+NOTIFY_RENTAL = 2
 NOTIFY_STREAMING = 3
 
 NOTIFICATION_CHOICES = (
     (NOTIFY_CINEMA, 'Cinema'),
     (NOTIFY_RETAIL, 'Retail Purchase'),
+    (NOTIFY_RENTAL, 'Rental'),
+    (NOTIFY_STREAMING, 'Online Streaming'),
     )
 
 

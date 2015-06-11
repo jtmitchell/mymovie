@@ -83,7 +83,6 @@ MIDDLEWARE_CLASSES = (
 # Social and standard django authentication
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GooglePlusAuth',
-    'social.backends.twitter.TwitterOAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -105,9 +104,15 @@ SOCIAL_AUTH_PIPELINE = (
 # expect these to come from the environment
 SOCIAL_AUTH_GOOGLE_PLUS_KEY = get_env_variable('GOOGLE_PLUS_KEY', '')
 SOCIAL_AUTH_GOOGLE_PLUS_SECRET = get_env_variable('GOOGLE_PLUS_SECRET', '')
-SOCIAL_AUTH_TWITTER_KEY = get_env_variable('TWITTER_KEY', '')
-SOCIAL_AUTH_TWITTER_SECRET = get_env_variable('TWITTER_SECRET', '')
 
+SOCIAL_AUTH_GOOGLE_PLUS_IGNORE_DEFAULT_SCOPE = True
+SOCIAL_AUTH_GOOGLE_PLUS_SCOPE = [
+    'https://www.googleapis.com/auth/plus.login',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile'
+]
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 
 ROOT_URLCONF = 'app.urls'
 
@@ -216,9 +221,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.DjangoModelPermissions',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework.filters.DjangoFilterBackend',

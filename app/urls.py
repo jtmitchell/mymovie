@@ -17,6 +17,9 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 
+from .views import ConfigurationView
+
+
 urlpatterns = [
     url(r'^favicon\.ico$',
         RedirectView.as_view(
@@ -30,6 +33,9 @@ urlpatterns = [
             permanent=False,
             ),
         name='robots'),
+
+    url(r'^api/v1/config',
+        ConfigurationView.as_view(), name='configuration'),
 
     url(r'^api/', include('users.urls', namespace='api')),
 
