@@ -204,7 +204,13 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django': {
+        # requests handled by django
+        'django.requests': {
+            'handlers': ['console'],
+            'level': get_env_variable('DJANGO_LOG_LEVEL', 'ERROR'),
+        },
+        # default log everything
+        '': {
             'handlers': ['console'],
             'level': get_env_variable('DJANGO_LOG_LEVEL', 'ERROR'),
         },
