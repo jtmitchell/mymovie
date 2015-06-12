@@ -40,14 +40,14 @@ The system will return a JWT token, which must be passed back in an
 Authorization header.
 
 
-## Login with OAuth2 token [/auth/register-by-token/:social]
+## Login with OAuth2 token [/auth/register-by-token/:name]
 
 After the front end preforms a login with a social service, it passes the token to the server
 which registers the user in our system, exchanges the token for another token, and returns
 our JWT token to the client.
 
 + Parameters
-    + social: google-plus (string) - Name of the social service providing the authentication.
+    + name: google-plus (string) - Name of the social service providing the authentication.
 
 ### Login [GET]
 
@@ -141,7 +141,7 @@ tell us what the movie details are.
 Resource for watchlists.
 
 + Parameter
-        + id: 1 (number) - Unique identifier for a watchlist
+    + id: 1 (number) - Unique identifier for a watchlist
 
 + Model (application/json)
 
@@ -232,7 +232,8 @@ Resource for watchlists.
 
 Resource for a list of user watchlists.
 
-+ Model
++ Model (application/json)
+
         [
             {
                 "id": 1,
