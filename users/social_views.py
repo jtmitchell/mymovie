@@ -47,7 +47,7 @@ class ObtainTokenView(APIView):
         except MissingBackend:
             raise Http404('Backend not found')
 
-        token = request.DATA.get('access_token')
+        token = request.GET.get('access_token')
         user = request.backend.do_auth(token)
         if user:
             if not user.is_active:
@@ -67,7 +67,16 @@ class ObtainTokenView(APIView):
             return Response(
                 dict(
                     token=jwt_encode_handler(payload),
-                    user=user,
+                    user=dict(
+                        id=user.pk,
+                        email=user.email,
+                        first_name=user.first_name,
+                        last_name=user.last_name,
+                        name=user.get_full_name(),
+                        avatar=user.profile.avatar_url,
+                        is_staff=user.is_staff,
+                        last_login=user.last_login,
+                        ),
                     )
                 )
         else:
