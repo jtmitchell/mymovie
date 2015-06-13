@@ -40,7 +40,7 @@ The system will return a JWT token, which must be passed back in an
 Authorization header.
 
 
-## Login with OAuth2 token [/auth/register-by-token/:social]
+## Login with OAuth2 token [/auth/register-by-token/:social?access_token=:token]
 
 After the front end preforms a login with a social service, it passes the token to the server
 which registers the user in our system, exchanges the token for another token, and returns
@@ -48,22 +48,25 @@ our JWT token to the client.
 
 + Parameters
     + social: google-plus (string) - Name of the social service providing the authentication.
+    + token: ya29.kQG0dHTiKO9 (string) - Access token from social service
 
 ### Login [GET]
 
 + Response 200 (application/json)
 
         {
-            "token": "<jwt token>",
-            "user": 
-                {
-                    "id": 1,
-                    "email": "james@example.com",
-                    "name": "James Mitchell",
-                    "avatar": "http://www.example.com/avatar.jpg"
-                }
+            "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE",
+            "user": {
+                "last_name": "Mitchell",
+                "avatar": "https://lh4.googleusercontent.com/-GorsEw8ovpc/AAAAAAAAAAI/AAAAAAAAAcw/wgKJc5pcZgo/photo.jpg?sz=50",
+                "first_name": "James",
+                "is_staff": true,
+                "name": "James Mitchell",
+                "last_login": "2015-06-13T01:08:29.151Z",
+                "id": 1,
+                "email": "james@mailinator.com"
+            }
         }
-
 
 ## Login [/auth/login]
 
@@ -76,14 +79,17 @@ Depreciated in favour of social authentication.
 + Request (application/json)
 
         {
-            "email": "test@example.com",
+            "username": "test@example.com",
             "password": "password"
         }
 
 + Response 200 (application/json)
 
         {
-            "token": "<jwt token>"
+            "id": 1,
+            "email": "james@example.com",
+            "name": "James Mitchell",
+            "avatar": "http://www.example.com/avatar.jpg"
         }
 
 ## Users [/users/me]
@@ -96,20 +102,23 @@ User details.
     
     + Headers
     
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 + Response 200 (application/json)
 
         {
             "id": 1,
-            "email": "james@example.com",
-            "name": "James Mitchell",
-            "avatar": "http://www.example.com/avatar.jpg"
+            "email": "james@mailinator.com",
+            "first_name": "James",
+            "last_name": "Mitchell",
+            "full_name": "James Mitchell",
+            "avatar": "https://lh4.googleusercontent.com/-GorsEw8ovpc/AAAAAAAAAAI/AAAAAAAAAcw/wgKJc5pcZgo/photo.jpg?sz=50"
         }
+
 
 # Group Movies and Watchlists
 
-## Movie [/movie/{id}]
+## Movie [/movies/{id}]
 
 Resource for a movie.
 
@@ -170,7 +179,7 @@ Resource for watchlists.
 
     + Headers
 
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 + Response 200
 
@@ -183,7 +192,7 @@ Resource for watchlists.
 
     + Headers
 
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
     + Body
     
@@ -210,7 +219,7 @@ Resource for watchlists.
 
     + Headers
 
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 + Response 200
 
@@ -223,7 +232,7 @@ Resource for watchlists.
 
     + Headers
 
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 
 + Response 204 (application/json)
@@ -260,7 +269,7 @@ Resource for a list of user watchlists.
 
     + Headers
 
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 + Response 200
        [Watchlist Collection][]
@@ -288,7 +297,7 @@ Resource for a list of user watchlists.
 
     + Headers
 
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
     + Body
 
@@ -306,7 +315,7 @@ Resource for a list of user watchlists.
 
     + Headers
 
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 + Response 200
 
@@ -318,7 +327,7 @@ Resource for a list of user watchlists.
 
     + Headers
 
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 + Response 200
 
@@ -330,7 +339,7 @@ Resource for a list of user watchlists.
 
     + Headers
 
-            Authorization: JWT <token>
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 + Response 204 (application/json)
 

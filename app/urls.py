@@ -38,6 +38,7 @@ urlpatterns = [
         ConfigurationView.as_view(), name='configuration'),
 
     url(r'^api/', include('users.urls', namespace='api')),
+    url(r'^api/', include('movies.urls', namespace='api')),
 
     url(r'^api-auth',
         include('rest_framework.urls', namespace='rest_framework')),
