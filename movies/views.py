@@ -16,9 +16,17 @@ class MovieViewSet(JWTViewSet, viewsets.ModelViewSet):
 
 class WatchlistViewSet(JWTViewSet, viewsets.ModelViewSet):
     serializer_class = WatchlistSerializer
-    queryset = Watchlist.objects.all()
+
+    def get_queryset(self):
+        """Filter based on the auth user"""
+        user = self.request.user
+        return Watchlist.objects.filter(user=user)
 
 
 class NotificationViewSet(JWTViewSet, viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
-    queryset = Notification.objects.all()
+
+    def get_queryset(self):
+        """Filter based on the auth user"""
+        user = self.request.user
+        return Notification.objects.filter(watchlist__user=user)

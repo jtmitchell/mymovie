@@ -55,7 +55,7 @@ class Watchlist(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     def __str__(self):
-        return '{0}/{1}'.format(self.movie.name, self.user.name_or_email)
+        return '{0}/{1}'.format(self.movie.name, self.user.get_full_name())
 
 
 NOTIFY_CINEMA = 0
