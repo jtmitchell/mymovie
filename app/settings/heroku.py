@@ -8,7 +8,7 @@ DEBUG = False
 TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = ['.herokuapp.com',
-                 '.mymovie.maungawhau.net.nz'
+                 '.maungawhau.net.nz'
                  ]
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
