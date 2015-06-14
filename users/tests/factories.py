@@ -12,7 +12,7 @@ class UserFactory(factory.DjangoModelFactory):
     class Meta:
         model = get_user_model()
 
-    username = factory.Sequence(lambda n: 'testuser%s' % n)
+    username = factory.Sequence(lambda n: 'user%s' % n)
     email = fake.email()
     password = TEST_PASSWORD
     first_name = fake.first_name()

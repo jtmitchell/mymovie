@@ -8,13 +8,18 @@ router = DefaultRouter(trailing_slash=False)
 router.include_format_suffixes = False
 router.register(r'v1/users', UserViewSet, base_name='user')
 
-auth_patterns = patterns('',
-                         url(r'^register-by-token/(?P<backend>[^/]+)$', 'users.social_views.obtain_token_view', name="obtain_login"),
-                         url(r'^login$', 'rest_framework_jwt.views.obtain_jwt_token', name="jwt_login"),
-                         url(r'^token-refresh$', 'rest_framework_jwt.views.refresh_jwt_token', name='token_refresh'),
-                         )
+auth_patterns = patterns(
+    '',
+    url(r'^register-by-token/(?P<backend>[^/]+)$',
+        'users.views.obtain_token_view', name="obtain_login"),
+    url(r'^login$',
+        'rest_framework_jwt.views.obtain_jwt_token', name="jwt_login"),
+    url(r'^token-refresh$',
+        'rest_framework_jwt.views.refresh_jwt_token', name='token_refresh'),
+    )
 
-urlpatterns = patterns('',
-                       url(r'', include(router.urls, namespace='users')),
-                       url(r'^v1/auth/', include(auth_patterns, namespace='auth')),
-                       )
+urlpatterns = patterns(
+    '',
+    url(r'', include(router.urls, namespace='users')),
+    url(r'^v1/auth/', include(auth_patterns, namespace='auth')),
+    )
