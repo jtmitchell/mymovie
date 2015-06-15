@@ -59,7 +59,7 @@ class WatchlistSerializer(serializers.ModelSerializer):
 
         movie = Movie.objects.lookup(name=moviename,
                                      service=service,
-                                     serviceid=service_id,
+                                     service_id=service_id,
                                      )
 
         validated_data.update(dict(movie=movie))

@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
+
+from movies.service import omdb
 
 
 SERVICE_OMDB = 'omdb'
@@ -12,17 +16,37 @@ SERVICE_CHOICES = (
 
 
 class MovieManager(models.Manager):
-    def lookup(self, name=None, service=SERVICE_OMDB, serviceid=None):
+    def lookup(self, name=None, service=SERVICE_OMDB, service_id=None):
         """
         Lookup a movie.
         If we don't have it already, retrieve data from the service.
         """
-        movie, _ = self.get_or_create(name=name)
-        service, _ = ServiceMovie.objects.get_or_create(
-            movie=movie,
-            service=service,
-            service_id=serviceid,
-            )
+        movie = None
+        qs = self.filter(
+            servicemovie__service=service,
+            servicemovie__service_id=service_id)
+
+        if qs.exists():
+            return qs[0]
+        else:
+            movie_data = omdb.get(service_id=service_id)
+
+            if movie_data:
+                movie, _ = self.get_or_create(
+                    name=movie_data.get('Title', name),
+                    year=movie_data.get('Year'),
+                    poster=movie_data.get('Poster'),
+                    )
+
+                service, _ = ServiceMovie.objects.get_or_create(
+                    movie=movie,
+                    service=service,
+                    service_id=service_id,
+                    )
+                service.service_data = movie_data
+                service.updated = datetime.date.today()
+                service.save()
+
         return movie
 
 
@@ -31,8 +55,10 @@ class Movie(models.Model):
     """Minimal amount of data for a Movie."""
     name = models.CharField(max_length=255, db_index=True)
     poster = models.URLField(max_length=255, blank=True, null=True)
-    year = models.IntegerField(verbose_name='Year of Release',
-                               db_index=True, blank=True, null=True)
+    year = models.CharField(
+        max_length=20,
+        verbose_name='Year of Release',
+        db_index=True, blank=True, null=True)
     subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                          through='Watchlist')
 
