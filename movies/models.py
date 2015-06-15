@@ -97,5 +97,5 @@ class Notification(models.Model):
             self.get_type_display(),
             'Y' if self.notified else 'N',
             self.watchlist.movie.name,
-            self.watchlist.user.name_or_email,
+            self.watchlist.user.get_full_name(),
             )
