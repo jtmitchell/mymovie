@@ -22,6 +22,10 @@ class WatchlistViewSet(JWTViewSet, viewsets.ModelViewSet):
         user = self.request.user
         return Watchlist.objects.filter(user=user)
 
+    def perform_create(self, serializer):
+        """Ensure we save the request user with the model"""
+        serializer.save(user=self.request.user)
+
 
 class NotificationViewSet(JWTViewSet, viewsets.ModelViewSet):
     serializer_class = NotificationSerializer

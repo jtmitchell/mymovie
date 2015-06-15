@@ -2,7 +2,8 @@
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from movies.models import Watchlist, Notification
+from movies.models import Watchlist, Notification, SERVICE_OMDB, NOTIFY_CINEMA, \
+    NOTIFY_RENTAL, NOTIFY_STREAMING
 from movies.tests.factories import MovieFactory, WatchlistFactory, \
     NotificationFactory, WatchlistWithNotificationsFactory
 from users.tests.factories import UserFactory
@@ -55,7 +56,6 @@ class TestMovieApi(TokenTestCase):
             format='json',
             )
 
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK,
                          'Got error: {}'.format(response.content))
 
@@ -64,12 +64,10 @@ class TestMovieApi(TokenTestCase):
     def test_create_watchlist(self):
         """Create a new watchlist"""
         data = dict(
-            movie=dict(
-                name="Star Trek",
-                service="omdb",
-                service_id="1"
-                ),
-            notifications=['Cinema', 'Rental', 'Streaming'],
+            moviename="Star Trek",
+            service=SERVICE_OMDB,
+            service_id='tt0796366',
+            notifywhen=[NOTIFY_CINEMA, NOTIFY_RENTAL, NOTIFY_STREAMING],
             )
         response = self.client.post(
             '/api/v1/watchlists',

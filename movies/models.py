@@ -11,6 +11,21 @@ SERVICE_CHOICES = (
     )
 
 
+class MovieManager(models.Manager):
+    def lookup(self, name=None, service=SERVICE_OMDB, serviceid=None):
+        """
+        Lookup a movie.
+        If we don't have it already, retrieve data from the service.
+        """
+        movie, _ = self.get_or_create(name=name)
+        service, _ = ServiceMovie.objects.get_or_create(
+            movie=movie,
+            service=service,
+            service_id=serviceid,
+            )
+        return movie
+
+
 @python_2_unicode_compatible
 class Movie(models.Model):
     """Minimal amount of data for a Movie."""
@@ -21,11 +36,13 @@ class Movie(models.Model):
     subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                          through='Watchlist')
 
+    objects = MovieManager()
+
     class Meta:
         ordering = ('name',)
 
     def __str__(self):
-        return self.name
+        return '{0}'.format(self.name)
 
 
 @python_2_unicode_compatible
@@ -42,7 +59,7 @@ class ServiceMovie(models.Model):
         unique_together = ('service_id', 'service')
 
     def __str__(self):
-        return self.movie.name
+        return '{0}'.format(self.movie.name)
 
 
 @python_2_unicode_compatible
