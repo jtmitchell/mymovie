@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from movies.models import SERVICE_CHOICES, NOTIFICATION_CHOICES
 from rest_framework.views import APIView
+from django.views.generic.base import TemplateView
 
 
 class ConfigurationView(APIView):
@@ -21,3 +22,7 @@ class ConfigurationView(APIView):
             )
 
         return Response(data)
+
+
+class HomepageView(TemplateView):
+    template_name = 'app/coming_soon.html'

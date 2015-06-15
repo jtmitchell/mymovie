@@ -40,3 +40,13 @@ class TestStatic(TestCase):
             response.url,
             '{0}/static/{1}'.format(TESTSERVER, 'app/favicon.png'),
             )
+
+
+class TestHomepage(TestCase):
+    """Load the homepage"""
+    def setUp(self):
+        self.client = Client()
+
+    def test_homepage(self):
+        response = self.client.get('/', follow=False)
+        self.assertEqual(response.status_code, 200)

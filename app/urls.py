@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 
 from .views import ConfigurationView
+from app.views import HomepageView
 
 
 urlpatterns = [
@@ -33,6 +34,11 @@ urlpatterns = [
             permanent=False,
             ),
         name='robots'),
+
+    url(r'^[/]?$',
+        HomepageView.as_view(),
+        kwargs=dict(title='MyMovie | Coming soon...'),
+        name='homepage'),
 
     url(r'^api/v1/config',
         ConfigurationView.as_view(), name='configuration'),
