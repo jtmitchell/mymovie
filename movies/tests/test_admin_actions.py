@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 
-from users.tests.factories import UserFactory
+from .factories import MovieFactory
 
 
 class TestMovieAdminActions(TestCase):
@@ -29,6 +29,8 @@ class TestMovieAdminActions(TestCase):
 
     def test_export_csv(self):
         """Export CSV action for movies."""
+        MovieFactory.create()  # suppress @UndefinedVariable
+
         data = dict(
             _selected_action=['1'],
             action=['export_as_csv'],
