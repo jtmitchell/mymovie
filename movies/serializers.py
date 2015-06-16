@@ -44,11 +44,6 @@ class WatchlistSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """
         Save the new watchlist and associated notifications and movies.
-
-            example_relationship = validated_data.pop('example_relationship')
-            instance = ExampleModel.objects.create(**validated_data)
-            instance.example_relationship = example_relationship
-            return instance
         """
         ModelClass = self.Meta.model
 

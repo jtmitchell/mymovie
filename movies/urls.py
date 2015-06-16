@@ -9,7 +9,7 @@ router.include_format_suffixes = False
 router.register(r'v1/movies', MovieViewSet, base_name='movie')
 router.register(r'v1/watchlists', WatchlistViewSet, base_name='watchlist')
 
-# register the nested urls for ctn routes
+# register the nested urls for movie routes
 wl_router = NestedSimpleRouter(router, r'v1/watchlists',
                                lookup='watchlist', trailing_slash=False)
 wl_router.register(r'notifications', NotificationViewSet,
