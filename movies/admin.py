@@ -6,6 +6,7 @@ from utils.actions import export_as_csv_action
 
 class ExtraOnNew(object):
     """Mixin to not put extra blank rows in."""
+
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
             # Don't add any extra forms if the related object already exists.
@@ -26,8 +27,8 @@ class MovieAdmin(admin.ModelAdmin):
         export_as_csv_action(
             "Export selection to CSV file",
             fields=list_display, header=True, force_fields=True
-            ),
-        ]
+        ),
+    ]
 
 
 class Notification_Inline(ExtraOnNew, admin.StackedInline):
@@ -36,11 +37,12 @@ class Notification_Inline(ExtraOnNew, admin.StackedInline):
 
 
 class WatchlistAdmin(admin.ModelAdmin):
+
     def watchlist_movie_name(self, obj):
         return obj.movie.name
 
     def watchlist_user_name(self, obj):
-        return obj.user.name
+        return obj.user.username
 
     def notifications(self, obj):
         notifications = []
@@ -48,7 +50,7 @@ class WatchlistAdmin(admin.ModelAdmin):
             notifications.append('{0}/{1}'.format(
                 item.get_type_display(),
                 'Y' if item.notified else 'N',
-                ))
+            ))
         return ' '.join(notifications)
 
     list_display = ('watchlist_movie_name', 'watchlist_user_name', 'notifications')
@@ -58,8 +60,8 @@ class WatchlistAdmin(admin.ModelAdmin):
         export_as_csv_action(
             "Export selection to CSV file",
             fields=list_display, header=True, force_fields=True
-            ),
-        ]
+        ),
+    ]
 
 admin.site.register(Movie, MovieAdmin)
 admin.site.register(Watchlist, WatchlistAdmin)

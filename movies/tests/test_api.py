@@ -14,6 +14,7 @@ class TestMovieApi(TokenTestCase):
     """
     Test the API calls.
     """
+
     def setUp(self):
         self.client = APIClient(enforce_csrf_checks=True)
         self.user = UserFactory.create()  # suppress @UndefinedVariable
@@ -26,7 +27,7 @@ class TestMovieApi(TokenTestCase):
             '/api/v1/movies/{}'.format(movie.pk),
             HTTP_AUTHORIZATION=self.auth,
             format='json',
-            )
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK,
                          'Got error: {}'.format(response.content))
@@ -40,7 +41,7 @@ class TestMovieApi(TokenTestCase):
             '/api/v1/watchlists/{}'.format(watchlist.pk),
             HTTP_AUTHORIZATION=self.auth,
             format='json',
-            )
+        )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND,
                          'Got error: {}'.format(response.content))
@@ -52,9 +53,9 @@ class TestMovieApi(TokenTestCase):
             '/api/v1/watchlists/{}'.format(watchlist.pk),
             HTTP_AUTHORIZATION='JWT {}'.format(
                 self.create_token(watchlist.user)
-                ),
+            ),
             format='json',
-            )
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK,
                          'Got error: {}'.format(response.content))
@@ -68,13 +69,13 @@ class TestMovieApi(TokenTestCase):
             service=SERVICE_OMDB,
             service_id='tt0796366',
             notifywhen=[NOTIFY_CINEMA, NOTIFY_RENTAL, NOTIFY_STREAMING],
-            )
+        )
         response = self.client.post(
             '/api/v1/watchlists',
             data=data,
             HTTP_AUTHORIZATION=self.auth,
             format='json',
-            )
+        )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED,
                          'Got error: {}'.format(response.content))
@@ -90,14 +91,26 @@ class TestMovieApi(TokenTestCase):
             '/api/v1/watchlists/{}'.format(watchlist.pk),
             HTTP_AUTHORIZATION='JWT {}'.format(
                 self.create_token(watchlist.user)
-                ),
+            ),
             format='json',
-            )
+        )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT,
                          'Got error: {}'.format(response.content))
         self.assertQuerysetEqual(Watchlist.objects.filter(pk=watchlist.pk), [],
                                  'Deleted watchlist is in database')
+
+    def test_delete_watchlist_wrong_user(self):
+        watchlist = WatchlistFactory.create()  # suppress @UndefinedVariable
+
+        response = self.client.delete(
+            '/api/v1/watchlists/{}'.format(watchlist.pk),
+            HTTP_AUTHORIZATION=self.auth,
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND,
+                         'Got error: {}'.format(response.content))
 
     def test_get_notification(self):
         notify = NotificationFactory.create()  # suppress @UndefinedVariable
@@ -106,12 +119,12 @@ class TestMovieApi(TokenTestCase):
             '/api/v1/watchlists/{}/notifications/{}'.format(
                 notify.watchlist.pk,
                 notify.pk,
-                ),
+            ),
             HTTP_AUTHORIZATION='JWT {}'.format(
                 self.create_token(notify.watchlist.user)
-                ),
+            ),
             format='json',
-            )
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK,
                          'Got error: {}'.format(response.content))
@@ -125,10 +138,10 @@ class TestMovieApi(TokenTestCase):
             '/api/v1/watchlists/{}/notifications/{}'.format(
                 notify.watchlist.pk,
                 notify.pk,
-                ),
+            ),
             HTTP_AUTHORIZATION=self.auth,
             format='json',
-            )
+        )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND,
                          'Got error: {}'.format(response.content))
@@ -140,12 +153,12 @@ class TestMovieApi(TokenTestCase):
             '/api/v1/watchlists/{}/notifications/{}'.format(
                 notify.watchlist.pk,
                 notify.pk,
-                ),
+            ),
             HTTP_AUTHORIZATION='JWT {}'.format(
                 self.create_token(notify.watchlist.user)
-                ),
+            ),
             format='json',
-            )
+        )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT,
                          'Got error: {}'.format(response.content))
