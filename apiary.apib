@@ -40,9 +40,11 @@ The system will return a JWT token, which must be passed back in an
 Authorization header.
 
 
-## Login with OAuth2 token [/auth/register-by-token/:social?access_token=:token]
+## Social Authentication [/auth/register-by-token/:social?access_token=:token]
 
-After the front end preforms a login with a social service, it passes the token to the server
+Authentication using a trusted 3rd-party social service.
+
+After the front end performs a login with a social service, it passes the token to the server
 which registers the user in our system, exchanges the token for another token, and returns
 our JWT token to the client.
 
@@ -68,13 +70,13 @@ our JWT token to the client.
             }
         }
 
-## Login [/auth/login]
+## Username and Password Authentication [/auth/login]
 
-User login.
+Authentication using a local username and password, local to the server.
 
-Depreciated in favour of social authentication.
+The normal UX will be to use social authentication, but this is available for access as a local admin or test user.
 
-### Login with email and password [POST]
+### Login [POST]
 
 + Request (application/json)
 
@@ -86,10 +88,7 @@ Depreciated in favour of social authentication.
 + Response 200 (application/json)
 
         {
-            "id": 1,
-            "email": "james@example.com",
-            "name": "James Mitchell",
-            "avatar": "http://www.example.com/avatar.jpg"
+            "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE"
         }
 
 ## Users [/users/me]
@@ -193,6 +192,77 @@ tell us what the movie details are.
     [Movie][]
         
 
+## Watchlist Collection [/watchlists]
+
+Resource for a list of user watchlists.
+
++ Model
+
+        [
+            {
+                "id": 1,
+                "movie":
+                    {
+                        "id": 1,
+                        "name": "Star Trek",
+                        "poster": "http://ia.media-imdb.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg"
+                        "year": 2009,
+                        "services": 
+                            [
+                                {...}
+                            ]
+                    },
+                "notifications":
+                    [
+                        {
+                            "id": 1,
+                            "type": 0,
+                            "watchlist": 1,
+                            "notified": false,
+                            "notified_date": ""
+                        }
+                    ]
+            }
+        ]
+
+### List [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
+
++ Response 200
+       [Watchlist Collection][]
+        
+
+### Create [POST]
+
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
+
+    + Body
+    
+            {
+                "moviename": "Star Trek",
+                "service": "omdb",
+                "service_id": "tt0796366"
+                "notifywhen":
+                    [
+                        0, 2, 3
+                    ]
+            }
+
++ Response 201
+
+    [Watchlist][]
+
+
 ## Watchlist [/watchlists/{id}]
 
 Resource for watchlists.
@@ -239,31 +309,6 @@ Resource for watchlists.
 
     [Watchlist][]
 
-### Create [POST]
-
-
-+ Request (application/json)
-
-    + Headers
-
-            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
-
-    + Body
-    
-            {
-                "moviename": "Star Trek",
-                "service": "omdb",
-                "service_id": "tt0796366"
-                "notifywhen":
-                    [
-                        0, 2, 3
-                    ]
-            }
-
-+ Response 201
-
-    [Watchlist][]
-
 ### Update [PUT]
 
 + Request (application/json)
@@ -288,119 +333,6 @@ Resource for watchlists.
 
 + Response 204 (application/json)
 
-## Watchlist Collection [/watchlists]
-
-Resource for a list of user watchlists.
-
-+ Model
-
-        [
-            {
-                "id": 1,
-                "movie":
-                    {
-                        "id": 1,
-                        "name": "Star Trek",
-                        "poster": "http://ia.media-imdb.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg"
-                        "year": 2009,
-                        "services": 
-                            [
-                                {...}
-                            ]
-                    },
-                "notifications":
-                    [
-                        {
-                            "id": 1,
-                            "type": 0,
-                            "watchlist": 1,
-                            "notified": false,
-                            "notified_date": ""
-                        }
-                    ]
-            }
-        ]
-
-### List [GET]
-
-+ Request (application/json)
-
-    + Headers
-
-            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
-
-+ Response 200
-       [Watchlist Collection][]
-        
-
-## Notification [/watchlists/{list_id}/notifications/{id}]
-
-+ Parameters
-    + id: 1 (number) - Unique identifier for a notification
-    + list_id: 1 (number) - Unique identifier for the watchlist
-
-+ Model (application/json)
-
-        {
-            "id": 1,
-            "type": 1,
-            "notified": false,
-            "notified_date": null,
-            "watchlist": 3
-        }
-
-### Create [POST]
-
-
-+ Request (application/json)
-
-    + Headers
-
-            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
-
-    + Body
-
-            {
-                "type": 1
-            }
-
-+ Response 201
-
-    [Notification][]
-
-### Retrieve [GET]
-
-+ Request (application/json)
-
-    + Headers
-
-            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
-
-+ Response 200
-
-    [Notification][]
-
-### Update [PUT]
-
-+ Request (application/json)
-
-    + Headers
-
-            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
-
-+ Response 200
-
-    [Notification][]
-
-### Delete [DELETE]
-
-+ Request (application/json)
-
-    + Headers
-
-            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
-
-+ Response 204 (application/json)
 
 ## Notification Collection [/watchlists/{list_id}/notifications]
 
@@ -421,4 +353,87 @@ Resource for a list of notifications on a watchlist.
             }
         ]
 
+
+### Create [POST]
+
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
+
+    + Body
+
+            {
+                "type": 1
+            }
+
++ Response 201
+
+    [Notification][]
+
+### List [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
+
++ Response 200
+
+    [Notification Collection][]
+
+
+## Notification [/watchlists/{list_id}/notifications/{id}]
+
++ Parameters
+    + id: 1 (number) - Unique identifier for a notification
+    + list_id: 1 (number) - Unique identifier for the watchlist
+
++ Model (application/json)
+
+        {
+            "id": 1,
+            "type": 1,
+            "notified": false,
+            "notified_date": null,
+            "watchlist": 3
+        }
+
+### Retrieve [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
+
++ Response 200
+
+    [Notification][]
+
+
+### Update [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
+
++ Response 200
+
+    [Notification][]
+
+### Delete [DELETE]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
+
++ Response 204 (application/json)
 
