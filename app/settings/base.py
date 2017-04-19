@@ -62,7 +62,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'social.apps.django_app.default',
+    'social_django',
 
     'app',
     'users',
@@ -82,7 +82,7 @@ MIDDLEWARE_CLASSES = (
 
 # Social and standard django authentication
 AUTHENTICATION_BACKENDS = (
-    'social.backends.google.GooglePlusAuth',
+    'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -146,7 +146,7 @@ DATABASES = {
         'PASSWORD': get_env_variable('DB_PASSWORD', ''),
         'HOST': get_env_variable('DB_HOST', ''),
         'PORT': get_env_variable('DB_PORT', ''),
-        'OPTIONS': {'init_command': 'SET storage_engine=INNODB;'},
+        # 'OPTIONS': {'init_command': 'SET storage_engine=INNODB;'},
     }
 }
 

@@ -12,7 +12,7 @@ from rest_framework.exceptions import PermissionDenied, AuthenticationFailed
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
-from social.apps.django_app.utils import psa
+from social_django.utils import psa
 
 from custom_rest_framework.viewsets import JWTViewSet
 

@@ -16,3 +16,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings.development")
 
 application = get_wsgi_application()
 application = DjangoWhiteNoise(application)
+
+import ptvsd
+ptvsd.enable_attach("my_secret", address = ('0.0.0.0', 3000))

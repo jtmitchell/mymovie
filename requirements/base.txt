@@ -1,6 +1,6 @@
 PyMySQL==0.6.6
 psycopg2==2.6
-Django==1.8.2
+Django==1.11
 djangorestframework==3.1.2
 djangorestframework-jwt==1.2.0
 drf-nested-routers==0.9.0
@@ -16,7 +16,7 @@ hiredis==0.2.0
 
 django-compressor==1.5
 
-python-social-auth==0.2.10
+social-auth-app-django==1.1.0
 
 # for serving the site in most places
 waitress==0.8.9
