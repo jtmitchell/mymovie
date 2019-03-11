@@ -1,0 +1,32 @@
+version: '3'
+services:
+  db:
+    image: mysql:5
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_USER: 'movies'
+      MYSQL_PASSWORD: 'movies'
+  cache:
+    image: redis:4-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+  web:
+    build: .
+    command: waitress-serve --port=80 app.wsgi:application
+    #command: python manage.py runserver 0.0.0.0:80
+    volumes: 
+      - .:/app
+    ports:
+      - 3000:3000 # ptvsd debug
+      - 8080:80
+    depends_on: 
+      - db
+      - cache
+    environment:
+      DJANGO_SETTINGS_MODULE: app.settings.production
+      GOOGLE_PLUS_KEY: ${GOOGLE_PLUS_KEY:-''}
+      GOOGLE_PLUS_SECRET: ${GOOGLE_PLUS_SECRET:-''}
+      DB_USER: 'movies'
+      DB_PASSWORD: 'movies'
+      DB_HOST: db
+      DB_PORT: 3306
