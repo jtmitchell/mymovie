@@ -1,4 +1,0 @@
--r base.txt
-
-# Stackato cloud setup
-django-stackato==1.0
