@@ -49,7 +49,7 @@ urlpatterns = [
     url(r'^api-auth',
         include('rest_framework.urls', namespace='rest_framework')),
 
-    url('', include('social.apps.django_app.urls', namespace='social')),
+    url('', include('social_django.urls', namespace='social')),
 
     url(r'^admin/', include(admin.site.urls)),
 ]

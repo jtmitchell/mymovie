@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from rest_framework_nested.routers import SimpleRouter, NestedSimpleRouter
 
 from .views import MovieViewSet, WatchlistViewSet, NotificationViewSet
@@ -15,7 +15,7 @@ wl_router = NestedSimpleRouter(router, r'v1/watchlists',
 wl_router.register(r'notifications', NotificationViewSet,
                    base_name='notification')
 
-urlpatterns = patterns('',
-                       url(r'', include(router.urls, namespace='movie')),
-                       url(r'', include(wl_router.urls, namespace='movie')),
-                       )
+urlpatterns = [
+    url(r'', include(router.urls, namespace='movie')),
+    url(r'', include(wl_router.urls, namespace='movie'))
+]
