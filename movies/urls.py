@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Urls for the movie models.
+"""
 from django.urls import include, path
 from rest_framework_nested.routers import SimpleRouter, NestedSimpleRouter
 
@@ -6,12 +9,12 @@ from .views import MovieViewSet, WatchlistViewSet, NotificationViewSet
 
 router = SimpleRouter(trailing_slash=False)
 router.include_format_suffixes = False
-router.register(r"v1/movies", MovieViewSet, basename="movie")
-router.register(r"v1/watchlists", WatchlistViewSet, basename="watchlist")
+router.register("movies", MovieViewSet, basename="movie")
+router.register("watchlists", WatchlistViewSet, basename="watchlist")
 
 # register the nested urls for movie routes
 wl_router = NestedSimpleRouter(
-    router, "v1/watchlists", lookup="watchlist", trailing_slash=False
+    router, "watchlists", lookup="watchlist", trailing_slash=False
 )
 wl_router.register("notifications", NotificationViewSet, basename="notification")
 

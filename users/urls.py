@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Urls for the user models.
+"""
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
@@ -10,7 +13,7 @@ from .views import UserViewSet
 
 router = DefaultRouter(trailing_slash=False)
 router.include_format_suffixes = False
-router.register("v1/users", UserViewSet, basename="user")
+router.register("users", UserViewSet, basename="user")
 
 auth_patterns = [
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
@@ -20,5 +23,5 @@ auth_patterns = [
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("v1/auth/", include(auth_patterns)),
+    path("auth/", include(auth_patterns)),
 ]

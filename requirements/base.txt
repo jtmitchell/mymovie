@@ -1,21 +1,13 @@
 dj-database-url==1.0.0
-Django
-django-filter
-django-redis
-djangorestframework
-djangorestframework-simplejwt[crypto]
-drf-nested-routers
-jsonfield
-markdown
+Django==4.1
 
-# Pillow==5.4.1
-# django-resized==0.3.5
-# sorl-thumbnail==12.5.0
-
-# hiredis==1.0.0
-
-# django-compressor==2.2
-
+django-debug-toolbar==3.6.0
+django-filter==22.1
+djangorestframework==3.13.1
+djangorestframework-simplejwt[crypto]==5.2.0
+drf-nested-routers==0.93.4
+jsonfield==3.1.0
+Markdown==3.4.1
 social-auth-app-django==5.0.0
 
 # for serving the site in most places

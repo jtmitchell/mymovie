@@ -1,0 +1,5 @@
+# Configuration for bandit security checking tool
+exclude_dirs:
+  - ava/tests/
+  - bulk_import/tests/
+  - external/tests/

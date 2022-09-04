@@ -15,16 +15,35 @@ import datetime
 import os
 import dj_database_url
 
-from distutils.util import strtobool
 from os.path import abspath, join, dirname
 
 from django.core.exceptions import ImproperlyConfigured
 
 
-def get_env_variable(var_name, default=None):
+def strtobool(val: str) -> bool:
     """
+    Convert a string representation of truth to true (1) or false (0).
+
+    True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values are
+    'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if 'val' is
+    anything else.
+
+    """
+    val = val.lower()
+    if val in ("y", "yes", "t", "true", "on", "1"):
+        return True
+    if val in ("n", "no", "f", "false", "off", "0"):
+        return False
+    raise ValueError(f"invalid truth value {val!r}")
+
+
+def get_env_variable(var_name: str, default=None):
+    """
+    Return an environment variable.
+
     Get the environment variable or return the default if provided or raise an
     exception.
+
     """
     try:
         if os.environ[var_name] in ("true", "false"):
@@ -37,10 +56,18 @@ def get_env_variable(var_name, default=None):
         raise ImproperlyConfigured(error_msg)
 
 
-# Build paths inside the project like this: path_root('somefolder', 'somefile')
-path_here = lambda *x: abspath(join(abspath(dirname(__file__)), *x))
-PROJECT_ROOT = path_here("../..")
-path_root = lambda *x: abspath(join(abspath(PROJECT_ROOT), *x))
+def path_root(x):
+    """
+    Return absolute path to dir from project root.
+
+    Build paths inside the project like this: path_root('somefolder',
+    'somefile').
+
+    """
+    return abspath(join(abspath(PROJECT_ROOT), *x))
+
+
+PROJECT_ROOT = abspath(join(abspath(dirname(__file__)), "../.."))
 
 
 # Quick-start development settings - unsuitable for production
@@ -73,15 +100,14 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE = (
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.auth.middleware.SessionAuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 )
 
 # Social and standard django authentication
@@ -154,7 +180,7 @@ WSGI_APPLICATION = "app.wsgi.application"
 # for the schema for dj_database_url
 DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
 
-AUTH_USER_MODEL = "auth.User"
+AUTH_USER_MODEL = "auth.User"  # pylint: disable=hard-coded-auth-user
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -243,7 +269,7 @@ SIMPLE_JWT = {
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",  # noqa: E501
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
     "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",

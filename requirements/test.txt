@@ -6,5 +6,6 @@ flake8
 mock
 pep8
 pylint
+pylint-django
 pytest
 pytest-django
