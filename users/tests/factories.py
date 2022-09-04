@@ -5,14 +5,14 @@ from django.contrib.auth import get_user_model
 
 fake = faker.create()
 
-TEST_PASSWORD = 'password'
+TEST_PASSWORD = "password"
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(factory.Factory):
     class Meta:
         model = get_user_model()
 
-    username = factory.Sequence(lambda n: 'user%s' % n)
+    username = factory.Sequence(lambda n: f"user{n}")
     email = fake.email()
     password = TEST_PASSWORD
     first_name = fake.first_name()

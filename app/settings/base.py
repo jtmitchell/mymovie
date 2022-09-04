@@ -8,11 +8,14 @@ https://docs.djangoproject.com/en/1.8/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
+
 """
 
 import datetime
-from distutils.util import strtobool
 import os
+import dj_database_url
+
+from distutils.util import strtobool
 from os.path import abspath, join, dirname
 
 from django.core.exceptions import ImproperlyConfigured
@@ -20,18 +23,19 @@ from django.core.exceptions import ImproperlyConfigured
 
 def get_env_variable(var_name, default=None):
     """
-    Get the environment variable or return the default if provided
-    or raise an exception
+    Get the environment variable or return the default if provided or raise an
+    exception.
     """
     try:
-        if os.environ[var_name] in ('true', 'false'):
+        if os.environ[var_name] in ("true", "false"):
             return bool(strtobool(os.environ[var_name]))
         return os.environ[var_name]
     except KeyError:
         if default is not None:
             return default
-        error_msg = "Set the %s environment variable" % var_name
+        error_msg = f"Set the {var_name} environment variable"
         raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: path_root('somefolder', 'somefile')
 path_here = lambda *x: abspath(join(abspath(dirname(__file__)), *x))
@@ -43,122 +47,121 @@ path_root = lambda *x: abspath(join(abspath(PROJECT_ROOT), *x))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ccab)em-+rurslp$gte^0%*)b$o(1_5907hcrdixxp**b^&94d'
+SECRET_KEY = get_env_variable("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['.maungawhau.net.nz']
+ALLOWED_HOSTS = [".maungawhau.net.nz"]
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    'rest_framework',
-    'social_django',
-
-    'app',
-    'users',
-    'movies',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework",
+    "social_django",
+    "app",
+    "users",
+    "movies",
 )
 
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'    
+MIDDLEWARE = (
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.auth.middleware.SessionAuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 )
 
 # Social and standard django authentication
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
+    "social_core.backends.open_id.OpenIdAuth",
+    "social_core.backends.google.GoogleOpenId",
+    "social_core.backends.google.GoogleOAuth2",
+    "social_core.backends.google.GoogleOAuth",
+    "social_core.backends.twitter.TwitterOAuth",
+    "django.contrib.auth.backends.ModelBackend",
 )
 
 SOCIAL_AUTH_PIPELINE = (
-    'social.pipeline.social_auth.social_details',
-    'social.pipeline.social_auth.social_uid',
-    'social.pipeline.social_auth.auth_allowed',
-    'social.pipeline.social_auth.social_user',
-    'social.pipeline.user.get_username',
-    'social.pipeline.social_auth.associate_by_email',
-    'social.pipeline.user.create_user',
-    'social.pipeline.social_auth.associate_user',
-    'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details',
-    'users.social.load_avatar',
+    "social.pipeline.social_auth.social_details",
+    "social.pipeline.social_auth.social_uid",
+    "social.pipeline.social_auth.auth_allowed",
+    "social.pipeline.social_auth.social_user",
+    "social.pipeline.user.get_username",
+    "social.pipeline.social_auth.associate_by_email",
+    "social.pipeline.user.create_user",
+    "social.pipeline.social_auth.associate_user",
+    "social.pipeline.social_auth.load_extra_data",
+    "social.pipeline.user.user_details",
+    "users.social.load_avatar",
 )
 
 # Client keys for social auth
 # expect these to come from the environment
-SOCIAL_AUTH_GOOGLE_PLUS_KEY = get_env_variable('GOOGLE_PLUS_KEY', '')
-SOCIAL_AUTH_GOOGLE_PLUS_SECRET = get_env_variable('GOOGLE_PLUS_SECRET', '')
+SOCIAL_AUTH_GOOGLE_PLUS_KEY = get_env_variable("GOOGLE_PLUS_KEY", "")
+SOCIAL_AUTH_GOOGLE_PLUS_SECRET = get_env_variable("GOOGLE_PLUS_SECRET", "")
 
 SOCIAL_AUTH_GOOGLE_PLUS_IGNORE_DEFAULT_SCOPE = True
 SOCIAL_AUTH_GOOGLE_PLUS_SCOPE = [
-    'https://www.googleapis.com/auth/plus.login',
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile'
+    "https://www.googleapis.com/auth/plus.login",
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
 ]
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/"
 
-ROOT_URLCONF = 'app.urls'
+# Enable for Postgres
+# SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+ROOT_URLCONF = "app.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'app.wsgi.application'
+WSGI_APPLICATION = "app.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mymovie',
-        'USER': get_env_variable('DB_USER', ''),
-        'PASSWORD': get_env_variable('DB_PASSWORD', ''),
-        'HOST': get_env_variable('DB_HOST', ''),
-        'PORT': get_env_variable('DB_PORT', ''),
-        # 'OPTIONS': {'init_command': 'SET storage_engine=INNODB;'},
-    }
-}
+# Refer to https://pypi.org/project/dj-database-url/
+# for the schema for dj_database_url
+DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
 
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = "auth.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'Pacific/Auckland'
+TIME_ZONE = "Pacific/Auckland"
 
 USE_I18N = True
 
@@ -174,92 +177,78 @@ APPEND_SLASH = False
 
 # Use the STATIC_HOST env to setup CDN hosting
 # http://whitenoise.evans.io/en/latest/django.html#instructions-for-amazon-cloudfront
-STATIC_URL = get_env_variable('DJANGO_STATIC_HOST', '') + '/static/'
-MEDIA_URL = '/media/'
+STATIC_URL = get_env_variable("DJANGO_STATIC_HOST", "") + "/static/"
+MEDIA_URL = "/media/"
 
-MEDIA_ROOT = path_root('media')
-STATIC_ROOT = path_root('assets')
+MEDIA_ROOT = path_root("media")
+STATIC_ROOT = path_root("assets")
 
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    )
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+)
 
 # Logging
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
         },
-        'simple': {
-            'format': '%(levelname)s %(message)s',
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
+        "simple": {
+            "format": "%(levelname)s %(message)s",
         },
     },
-    'loggers': {
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
         # requests handled by django
-        'django.requests': {
-            'handlers': ['console'],
-            'level': get_env_variable('DJANGO_LOG_LEVEL', 'ERROR'),
+        "django.requests": {
+            "handlers": ["console"],
+            "level": get_env_variable("DJANGO_LOG_LEVEL", "ERROR"),
         }
-    }
+    },
 }
 
 # Django REST API
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
     ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
-    'DEFAULT_FILTER_BACKENDS': (
-        'rest_framework.filters.DjangoFilterBackend',
-    ),
-    'PAGINATE_BY': 100,
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    "PAGINATE_BY": 100,
 }
 
 # Token auth for the api
-JWT_AUTH = {
-    'JWT_ENCODE_HANDLER':
-    'rest_framework_jwt.utils.jwt_encode_handler',
-
-    'JWT_DECODE_HANDLER':
-    'rest_framework_jwt.utils.jwt_decode_handler',
-
-    'JWT_PAYLOAD_HANDLER':
-    'rest_framework_jwt.utils.jwt_payload_handler',
-
-    'JWT_PAYLOAD_GET_USER_ID_HANDLER':
-    'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
-
-    'JWT_SECRET_KEY': SECRET_KEY,
-    'JWT_ALGORITHM': 'HS256',
-    'JWT_VERIFY': True,
-    'JWT_VERIFY_EXPIRATION': True,
-    'JWT_LEEWAY': 30,
-
-    # token expires after 4 hours, unless refreshed
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=4),
-
-    'JWT_ALLOW_REFRESH': True,
-
-    # token can be refreshed up to 7 days after ORIGINAL issue
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
-
-    'JWT_AUTH_HEADER_PREFIX': 'JWT',
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": False,
+    "SIGNING_KEY": SECRET_KEY,
+    "ALGORITHM": "HS256",
+    "LEEWAY": 30,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": datetime.timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": datetime.timedelta(days=1),
 }
-
-# add header to suggest refresh if close to expiration
-JWT_SUGGEST_REFRESH_DELTA = datetime.timedelta(hours=1)

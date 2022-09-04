@@ -1,24 +1,23 @@
-mysqlclient==1.4.2
-#MySQL-python==1.2.5
-Django==1.11.20
-djangorestframework==3.9.2
-djangorestframework-jwt==1.11.0
-drf-nested-routers==0.91
-jsonfield==2.0.2
-django-filter==0.10.0
+dj-database-url==1.0.0
+Django
+django-filter
+django-redis
+djangorestframework
+djangorestframework-simplejwt[crypto]
+drf-nested-routers
+jsonfield
+markdown
 
-Pillow==5.4.1
-django-resized==0.3.5
-sorl-thumbnail==12.5.0
+# Pillow==5.4.1
+# django-resized==0.3.5
+# sorl-thumbnail==12.5.0
 
-django-redis==4.10.0
-hiredis==1.0.0
+# hiredis==1.0.0
 
-django-compressor==2.2
+# django-compressor==2.2
 
-social-auth-app-django==3.1.0
+social-auth-app-django==5.0.0
 
 # for serving the site in most places
-waitress==1.2.1
-whitenoise==4.1.2
-dj-database-url==0.3.0
+waitress==2.1.2
+whitenoise==6.2.0

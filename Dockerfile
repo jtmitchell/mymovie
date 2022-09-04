@@ -1,5 +1,8 @@
 FROM python:2-alpine as builder
 
+LABEL Version="1.0.0-rc-0"
+LABEL Description="Application for tracking movies."
+
 RUN apk add --no-cache --virtual .build-deps build-base mariadb-dev jpeg-dev zlib-dev tiff-dev libwebp-dev
 
 RUN mkdir /install
