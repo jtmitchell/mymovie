@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 import datetime
-
-from factory import fuzzy
 import factory
-from faker import Factory as faker
+
+from factory.django import DjangoModelFactory
+from factory import fuzzy
+from faker import Faker
 
 from movies import models
 from users.tests.factories import UserFactory
 
 
-fake = faker.create()
+fake = Faker()
 
 
-class MovieFactory(factory.Factory):
+class MovieFactory(DjangoModelFactory):
     class Meta:
         model = models.Movie
 
@@ -25,7 +26,7 @@ class MovieFactory(factory.Factory):
     )
 
 
-class ServiceMovieFactory(factory.Factory):
+class ServiceMovieFactory(DjangoModelFactory):
     class Meta:
         model = models.ServiceMovie
 
@@ -35,7 +36,7 @@ class ServiceMovieFactory(factory.Factory):
     updated = fuzzy.FuzzyDate(datetime.date(2015, 1, 1))
 
 
-class WatchlistFactory(factory.Factory):
+class WatchlistFactory(DjangoModelFactory):
     class Meta:
         model = models.Watchlist
 
@@ -43,18 +44,9 @@ class WatchlistFactory(factory.Factory):
     user = factory.SubFactory(UserFactory)
 
 
-class NotificationFactory(factory.Factory):
+class NotificationFactory(DjangoModelFactory):
     class Meta:
         model = models.Notification
 
     watchlist = factory.SubFactory(WatchlistFactory)
     type = fuzzy.FuzzyChoice([x[0] for x in models.NOTIFICATION_CHOICES])
-
-
-class WatchlistWithNotificationsFactory(WatchlistFactory):
-    notify1 = factory.RelatedFactory(
-        NotificationFactory, "watchlist", type=models.NOTIFICATION_CHOICES[0][0]
-    )
-    notify2 = factory.RelatedFactory(
-        NotificationFactory, "watchlist", type=models.NOTIFICATION_CHOICES[1][0]
-    )

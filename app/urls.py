@@ -31,11 +31,13 @@ urlpatterns = [
         name="robots",
     ),
     path(
-        "/",
+        "",
         HomepageView.as_view(),
         kwargs=dict(title="MyMovie | Coming soon..."),
         name="homepage",
     ),
+    path("", include("social_django.urls")),
+    path("admin/", admin.site.urls),
     path("api/v1/config", ConfigurationView.as_view(), name="configuration"),
     path("api/v1/", include("users.urls")),
     path("api/v1/", include("movies.urls")),
@@ -45,8 +47,6 @@ urlpatterns = [
             "rest_framework.urls",
         ),
     ),
-    path("", include("social_django.urls")),
-    path("admin/", admin.site.urls),
     # Add an OpenAPI/Swagger schema endpoint
     # This will generate and return the YAML for our API
     path(

@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-from faker import Factory as faker
 import factory
+
+from factory.django import DjangoModelFactory
+from faker import Faker
 from django.contrib.auth import get_user_model
 
-fake = faker.create()
+fake = Faker()
 
 TEST_PASSWORD = "password"
 
 
-class UserFactory(factory.Factory):
+class UserFactory(DjangoModelFactory):
     class Meta:
         model = get_user_model()
 

@@ -44,6 +44,6 @@ class TestMovieAdminActions(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTrue(response.has_header("content-type"))
         self.assertEquals(
-            response._headers.get("content-type"),
-            ("Content-Type", "text/csv"),
+            response.headers.get("content-type"),
+            "text/csv",
         )

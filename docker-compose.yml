@@ -24,4 +24,4 @@ services:
       DJANGO_SETTINGS_MODULE: app.settings.production
       GOOGLE_PLUS_KEY: ${GOOGLE_PLUS_KEY:-''}
       GOOGLE_PLUS_SECRET: ${GOOGLE_PLUS_SECRET:-''}
-      DATABASE: "mysql://${MYSQL_USER:-'movies'}:${MYSQL_PASSWORD:-'movies'}@db:3306/movies"
+      DATABASE_URL: "mysql://${MYSQL_USER:-'movies'}:${MYSQL_PASSWORD:-'movies'}@db:3306/movies"
