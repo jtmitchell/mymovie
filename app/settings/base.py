@@ -15,8 +15,7 @@ import datetime
 import os
 import dj_database_url
 
-from os.path import abspath, join, dirname
-
+from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -56,18 +55,8 @@ def get_env_variable(var_name: str, default=None):
         raise ImproperlyConfigured(error_msg)
 
 
-def path_root(x):
-    """
-    Return absolute path to dir from project root.
-
-    Build paths inside the project like this: path_root('somefolder',
-    'somefile').
-
-    """
-    return abspath(join(abspath(PROJECT_ROOT), *x))
-
-
-PROJECT_ROOT = abspath(join(abspath(dirname(__file__)), "../.."))
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -202,8 +191,8 @@ APPEND_SLASH = False
 STATIC_URL = get_env_variable("DJANGO_STATIC_HOST", "") + "/static/"
 MEDIA_URL = "/media/"
 
-MEDIA_ROOT = path_root("media")
-STATIC_ROOT = path_root("assets")
+MEDIA_ROOT = f"{BASE_DIR}/media"
+STATIC_ROOT = f"{BASE_DIR}/assets"
 
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
