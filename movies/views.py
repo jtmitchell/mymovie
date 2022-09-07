@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 from rest_framework import viewsets
-
 
 from .models import Movie, Watchlist, Notification
 from .serializers import MovieSerializer, WatchlistSerializer, NotificationSerializer

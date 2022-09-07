@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 import datetime
 
 from django.conf import settings
 from django.db import models
-from jsonfield import JSONField
+from jsonfield import JSONField  # type: ignore
 
 from movies.service import omdb
 
@@ -13,6 +12,10 @@ SERVICE_CHOICES = ((SERVICE_OMDB, "Open Movie Database"),)
 
 
 class MovieManager(models.Manager):
+    """
+    Provide lookup function.
+    """
+
     def lookup(self, name=None, service=SERVICE_OMDB, service_id=None):
         """
         Lookup a movie.
@@ -27,24 +30,23 @@ class MovieManager(models.Manager):
 
         if qs.exists():
             return qs[0]
-        else:
-            movie_data = omdb.get(service_id=service_id)
+        movie_data = omdb.get(service_id=service_id)
 
-            if movie_data:
-                movie, _ = self.get_or_create(
-                    name=movie_data.get("Title", name),
-                    year=movie_data.get("Year"),
-                    poster=movie_data.get("Poster"),
-                )
+        if movie_data:
+            movie, _ = self.get_or_create(
+                name=movie_data.get("Title", name),
+                year=movie_data.get("Year"),
+                poster=movie_data.get("Poster"),
+            )
 
-                service, _ = ServiceMovie.objects.get_or_create(
-                    movie=movie,
-                    service=service,
-                    service_id=service_id,
-                )
-                service.service_data = movie_data
-                service.updated = datetime.date.today()
-                service.save()
+            service, _ = ServiceMovie.objects.get_or_create(
+                movie=movie,
+                service=service,
+                service_id=service_id,
+            )
+            service.service_data = movie_data
+            service.updated = datetime.date.today()
+            service.save()
 
         return movie
 
@@ -146,9 +148,9 @@ class Notification(models.Model):
         unique_together = ("watchlist", "type")
 
     def __str__(self):
-        return "{0}/{1}/{2}/{3}".format(
-            self.get_type_display(),
-            "Y" if self.notified else "N",
-            self.watchlist.movie.name,
-            self.watchlist.user.get_full_name(),
+        return (
+            f"{self.get_type_display()}/"
+            f"{'Y' if self.notified else 'N'}/"
+            f"{self.watchlist.movie.name}/"
+            f"{self.watchlist.user.get_full_name()}"
         )

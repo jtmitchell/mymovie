@@ -85,7 +85,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -97,9 +97,9 @@ INSTALLED_APPS = (
     "app",
     "users",
     "movies",
-)
+]
 
-MIDDLEWARE = (
+MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -108,15 +108,15 @@ MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-)
+]
 
 # Social and standard django authentication
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
     "social_core.backends.open_id.OpenIdAuth",
     "django.contrib.auth.backends.ModelBackend",
-)
+]
 
-SOCIAL_AUTH_PIPELINE = (
+SOCIAL_AUTH_PIPELINE = [
     "social_core.pipeline.social_auth.social_details",
     "social_core.pipeline.social_auth.social_uid",
     "social_core.pipeline.social_auth.auth_allowed",
@@ -128,7 +128,7 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.load_extra_data",
     "social_core.pipeline.user.user_details",
     "users.social.load_avatar",
-)
+]
 
 # Client keys for social auth
 # expect these to come from the environment
@@ -205,10 +205,10 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = path_root("media")
 STATIC_ROOT = path_root("assets")
 
-STATICFILES_FINDERS = (
+STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-)
+]
 
 # Logging
 LOGGING = {

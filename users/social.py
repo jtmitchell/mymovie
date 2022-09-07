@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+"""
+Load the avatar picture from the different social services.
+"""
 
 
 def load_avatar(backend, details, response, uid, user, *args, **kwargs):
@@ -8,19 +10,16 @@ def load_avatar(backend, details, response, uid, user, *args, **kwargs):
     if user:
         url = None
         try:
-            if 'facebook' in backend.name:
-                url = "https://graph.facebook.com/%s/picture" % response["id"]
-            elif 'google' in backend.name:
-                url = response["image"]['url']
-        except:
+            if "facebook" in backend.name:
+                url = f"https://graph.facebook.com/{response['id']}/picture"
+            elif "google" in backend.name:
+                url = response["image"]["url"]
+        except Exception:
             url = None
 
         if url:
-            try:
-                profile = user.profile
-                profile.avatar = url
-                profile.save()
-            except:
-                pass
+            profile = user.profile
+            profile.avatar = url
+            profile.save()
 
-        return {'avatar': url}
+        return {"avatar": url}

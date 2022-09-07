@@ -1,15 +1,16 @@
-# -*- coding: utf-8 -*-
+# flake8: noqa
+# pylint: disable=wildcard-import, unused-wildcard-import
 
 from .base import *
 
 DEBUG = True
 TEMPLATE_DEBUG = True
 
-INSTALLED_APPS += ("debug_toolbar",)
+INSTALLED_APPS += ["debug_toolbar"]
 
-INTERNAL_IPS = ("127.0.0.1",)
+INTERNAL_IPS = ["127.0.0.1"]
 
-MIDDLEWARE += ("debug_toolbar.middleware.DebugToolbarMiddleware",)
+MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
 ALLOWED_HOSTS = ["*"]
 

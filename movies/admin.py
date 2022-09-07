@@ -4,23 +4,12 @@ from movies.models import ServiceMovie, Movie, Notification, Watchlist
 from utils import export_as_csv_action
 
 
-class ExtraOnNew(object):
-    """
-    Mixin to not put extra blank rows in.
-    """
-
-    def get_extra(self, request, obj=None, **kwargs):
-        if obj:
-            # Don't add any extra forms if the related object already exists.
-            return 0
-        return self.extra
-
-
-class ServiceMovie_Inline(ExtraOnNew, admin.StackedInline):
+class ServiceMovie_Inline(admin.StackedInline):
     model = ServiceMovie
     extra = 1
 
 
+@admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
@@ -35,19 +24,29 @@ class MovieAdmin(admin.ModelAdmin):
     ]
 
 
-class Notification_Inline(ExtraOnNew, admin.StackedInline):
+class Notification_Inline(admin.StackedInline):
     model = Notification
     extra = 2
 
 
+@admin.register(Watchlist)
 class WatchlistAdmin(admin.ModelAdmin):
-    def watchlist_movie_name(self, obj):
+    def watchlist_movie_name(self, obj: Watchlist) -> str:
+        """
+        Return the movie name.
+        """
         return obj.movie.name
 
-    def watchlist_user_name(self, obj):
+    def watchlist_user_name(self, obj: Watchlist) -> str:
+        """
+        Return the user name.
+        """
         return obj.user.username
 
-    def notifications(self, obj):
+    def notifications(self, obj: Watchlist) -> str:
+        """
+        Return a display list of notifications.
+        """
         notifications = []
         for item in obj.notification_set.all():
             notifications.append(
@@ -66,7 +65,3 @@ class WatchlistAdmin(admin.ModelAdmin):
             force_fields=True,
         ),
     ]
-
-
-admin.site.register(Movie, MovieAdmin)
-admin.site.register(Watchlist, WatchlistAdmin)

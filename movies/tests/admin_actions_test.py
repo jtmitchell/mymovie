@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.test import TestCase, Client
 
@@ -15,6 +14,7 @@ class TestMovieAdminActions(TestCase):
     """
 
     def setUp(self):
+        User = get_user_model()
         self.client = Client()
         self.superuser = User.objects.create_superuser(
             username="test", email="test@test.co.nz", password="test"
@@ -41,9 +41,9 @@ class TestMovieAdminActions(TestCase):
             reverse("admin:movies_movie_changelist"), data=data, follow=True
         )
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(response.has_header("content-type"))
-        self.assertEquals(
+        self.assertEqual(
             response.headers.get("content-type"),
             "text/csv",
         )

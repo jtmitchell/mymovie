@@ -6,12 +6,9 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
 from rest_framework.schemas import get_schema_view
-from rest_framework import permissions
 from rest_framework.schemas.openapi import SchemaGenerator
 
-from app.views import HomepageView
-from .views import ConfigurationView
-
+from . import views
 
 urlpatterns = [
     path(
@@ -30,15 +27,16 @@ urlpatterns = [
         ),
         name="robots",
     ),
+    path("version", views.version, name="version"),
     path(
         "",
-        HomepageView.as_view(),
+        views.HomepageView.as_view(),
         kwargs=dict(title="MyMovie | Coming soon..."),
         name="homepage",
     ),
     path("", include("social_django.urls")),
     path("admin/", admin.site.urls),
-    path("api/v1/config", ConfigurationView.as_view(), name="configuration"),
+    path("api/v1/config", views.ConfigurationView.as_view(), name="configuration"),
     path("api/v1/", include("users.urls")),
     path("api/v1/", include("movies.urls")),
     path(
@@ -57,7 +55,7 @@ urlpatterns = [
             version="1.0.0",
             url="/api/v1",
             public=True,
-            permission_classes=[permissions.AllowAny],
+            permission_classes=[],
             # urlconf="",
             generator_class=SchemaGenerator,
         ),

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -14,6 +13,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def me(self, request):
+        """
+        Return information for the logged in user.
+        """
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)

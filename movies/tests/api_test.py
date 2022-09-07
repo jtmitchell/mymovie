@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# flake8: noqa
+
 from unittest.mock import patch
 from django.urls import reverse
 from rest_framework import status
@@ -18,7 +19,7 @@ from movies.tests.factories import (
     NotificationFactory,
 )
 from users.tests.factories import UserFactory
-from users.tests.test_api import TokenTestCase
+from users.tests.api_test import TokenTestCase
 
 star_trek_json = {
     "Title": "Star Trek",

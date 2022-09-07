@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
@@ -11,8 +10,9 @@ class UserProfileInline(admin.StackedInline):
     can_delete = False
 
 
-class UserAdmin(UserAdmin):
+class UserMovieAdmin(UserAdmin):
     inlines = (UserProfileInline,)
 
+
 admin.site.unregister(get_user_model())
-admin.site.register(get_user_model(), UserAdmin)
+admin.site.register(get_user_model(), UserMovieAdmin)

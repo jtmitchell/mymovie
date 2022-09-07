@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 Urls for the user models.
 """
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
+from rest_framework_simplejwt.views import (  # type: ignore
     TokenObtainPairView,
     TokenRefreshView,
     TokenVerifyView,

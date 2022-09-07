@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from rest_framework import serializers
 
 from .models import Movie, Watchlist, Notification, ServiceMovie
@@ -65,18 +64,13 @@ class WatchlistSerializer(serializers.ModelSerializer):
             instance = ModelClass.objects.create(**validated_data)
         except TypeError as exc:
             msg = (
-                "Got a `TypeError` when calling `%s.objects.create()`. "
-                "This may be because you have a writable field on the "
-                "serializer class that is not a valid argument to "
-                "`%s.objects.create()`. You may need to make the field "
-                "read-only, or override the %s.create() method to handle "
-                "this correctly.\nOriginal exception text was: %s."
-                % (
-                    ModelClass.__name__,
-                    ModelClass.__name__,
-                    self.__class__.__name__,
-                    exc,
-                )
+                f"Got a `TypeError` when calling `{ModelClass.__name__}.objects.create()`. "
+                "This may be because you have a writable field on the serializer class "
+                f"that is not a valid argument to `{ModelClass.__name__}.objects.create()`. "
+                "You may need to make the field read-only, "
+                f"or override the {self.__class__.__name__}.create() method to handle "
+                "this correctly.\n"
+                f"Original exception text was: {exc}."
             )
             raise TypeError(msg)
 

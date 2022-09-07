@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """
 Urls for the movie models.
 """
 from django.urls import include, path
-from rest_framework_nested.routers import SimpleRouter, NestedSimpleRouter
+from rest_framework_nested.routers import SimpleRouter, NestedSimpleRouter  # type: ignore
 
 from .views import MovieViewSet, WatchlistViewSet, NotificationViewSet
 
