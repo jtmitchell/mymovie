@@ -5,6 +5,7 @@ from django.urls import include, path
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
+from django.conf import settings
 from rest_framework.schemas import get_schema_view
 from rest_framework.schemas.openapi import SchemaGenerator
 
@@ -73,3 +74,8 @@ urlpatterns = [
         name="swagger-ui",
     ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("__debug__/", include("debug_toolbar.urls")),
+    ]
