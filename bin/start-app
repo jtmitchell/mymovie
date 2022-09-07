@@ -1,0 +1,13 @@
+#!/bin/bash
+# This shell script serves as the entrypoint startup script for the container.
+
+if [ "$1" == "migrate" ]; then
+    # do the data migration then exit
+    python3 manage.py migrate
+    exit
+fi
+
+# Start the wsgi instance.
+[ -z "${SERVER_PORT}" ] && SERVER_LISTEN_PORT=80
+echo "SERVER_LISTEN_PORT=${SERVER_LISTEN_PORT}"
+exec python -m kubernetes_wsgi --port ${SERVER_PORT} --health-check-path /version app.wsgi

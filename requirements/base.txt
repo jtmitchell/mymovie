@@ -8,9 +8,9 @@ djangorestframework-simplejwt[crypto]==5.2.0
 drf-nested-routers==0.93.4
 jsonfield==3.1.0
 JustWatch==0.5.1
-Markdown==3.4.1
-social-auth-app-django==5.0.0
 
 # for serving the site in most places
-waitress==2.1.2
+kubernetes-wsgi==1.1
+Markdown==3.4.1
+social-auth-app-django==5.0.0
 whitenoise==6.2.0

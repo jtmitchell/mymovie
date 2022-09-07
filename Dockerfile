@@ -1,22 +1,32 @@
-FROM python:2-alpine as builder
+FROM docker.io/library/python:3.10
 
 LABEL Version="1.0.0-rc-0"
 LABEL Description="Application for tracking movies."
 
-RUN apk add --no-cache --virtual .build-deps build-base mariadb-dev jpeg-dev zlib-dev tiff-dev libwebp-dev
+# Create 'app' user with id=1000
+RUN groupadd --force --gid 1000 app
+RUN useradd --uid 1000 --gid 1000 --no-create-home app
 
-RUN mkdir /install
+ENV VIRTUAL_ENV=/var/.venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+WORKDIR /var/app
+
 COPY requirements requirements/
 COPY requirements.txt requirements.txt
-RUN pip install --install-option="--prefix=/install" -r requirements.txt
+RUN python3 -m pip install --no-cache -r requirements.txt
 
-FROM python:2-alpine
+COPY manage.py /var/app
+COPY bin /var/app
+COPY app /var/app
+COPY movies /var/app
+COPY users /var/app
+COPY utils /var/app
 
-RUN apk add --no-cache py-mysqldb mariadb-dev
-COPY --from=builder /install /usr/local
+# Collect the static files
+RUN python manage.py collectstatic --noinput --no-color
 
-RUN mkdir /app
-WORKDIR /app
-COPY . /app
-
-EXPOSE 80 3000
+USER app
+EXPOSE 80 9000
+ENTRYPOINT ["/var/app/bin/start-app"]
