@@ -10,4 +10,4 @@ fi
 # Start the wsgi instance.
 [ -z "${SERVER_PORT}" ] && SERVER_LISTEN_PORT=80
 echo "SERVER_LISTEN_PORT=${SERVER_LISTEN_PORT}"
-exec python -m kubernetes_wsgi --port ${SERVER_PORT} --health-check-path /version app.wsgi
+exec python3 -m kubernetes_wsgi --port ${SERVER_PORT} --health-check-path /version app.wsgi

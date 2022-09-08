@@ -12,5 +12,6 @@ JustWatch==0.5.1
 # for serving the site in most places
 kubernetes-wsgi==1.1
 Markdown==3.4.1
+mysqlclient==2.1.1
 social-auth-app-django==5.0.0
 whitenoise==6.2.0
