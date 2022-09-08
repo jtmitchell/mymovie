@@ -16,9 +16,9 @@ services:
     labels:
       # These labels enable traefik to route traffic to the container
       - "traefik.enable=true"
-      - "traefik.http.routers.mailhog.rule=Host(`mailhog.localhost`)"
-      - "traefik.http.routers.mailhog.entrypoints=web"
-      - "traefik.http.services.mailhog.loadbalancer.server.port=8025"
+      - "traefik.http.routers.email.rule=Host(`mailhog.localhost`)"
+      - "traefik.http.routers.email.entrypoints=web"
+      - "traefik.http.services.email.loadbalancer.server.port=8025"
     entrypoint: ["/bin/sh", "-c", "MailHog &>/dev/null"]
 
   web:
@@ -29,4 +29,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`movies.localhost`)"
       - "traefik.http.routers.app.entrypoints=web"
-      - "traefik.http.services.app.loadbalancer.server.port=80"
+      - "traefik.http.services.app.loadbalancer.server.port=8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: app.settings.development

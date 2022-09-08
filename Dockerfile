@@ -3,7 +3,6 @@ ARG baseimage=ubuntu:22.04
 FROM ${baseimage} as build
 
 ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ="Auckland/Pacific"
 
 LABEL Version="1.0.0-rc-0"
 LABEL Description="Application for tracking movies."
@@ -52,10 +51,11 @@ FROM ${baseimage} as prod
 
 RUN apt-get update && apt install -y --no-install-recommends \
     python3 python3-pip \
+    tzdata \
     mysql-client libmysqlclient21 \
     && rm -rf /var/lib/apt/lists/*
 
-
+ENV TZ="Pacific/Auckland"
 ENV PATH="/var/.venv/bin:$PATH"
 COPY --from=build /var/.venv /var/.venv
 COPY --from=build /var/app /var/app
@@ -64,7 +64,10 @@ COPY --from=build /var/app /var/app
 RUN groupadd --force --gid 1000 app
 RUN useradd --uid 1000 --gid 1000 --no-create-home app
 
+WORKDIR /var/app
 USER app
 VOLUME ["/var/tmp"]
-EXPOSE 80 9000
+EXPOSE 8000 9000
+ENV SERVER_PORT=8000
+
 ENTRYPOINT ["/var/app/bin/start-app"]
