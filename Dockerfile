@@ -4,15 +4,11 @@ FROM ${baseimage} as build
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-LABEL Version="1.0.0-rc-0"
-LABEL Description="Application for tracking movies."
-
 RUN apt-get update && apt-get install -y \
     python3 python3-venv python3-pip \
     python3-dev \
     build-essential \
-    default-libmysqlclient-dev \
-    mysql-client \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m venv --copies /var/.venv
@@ -49,11 +45,13 @@ RUN pytest /var/app/
 # Final stage.
 FROM ${baseimage} as prod
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt install -y --no-install-recommends \
     python3 python3-pip \
     tzdata \
     netcat-openbsd \
-    mysql-client libmysqlclient21 \
+    libpq5 postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 ENV TZ="Pacific/Auckland"
@@ -64,6 +62,9 @@ COPY --from=build /var/app /var/app
 # Create 'app' user with id=1000
 RUN groupadd --force --gid 1000 app
 RUN useradd --uid 1000 --gid 1000 --no-create-home app
+
+LABEL Version="1.0.0-rc-0"
+LABEL Description="Application for tracking movies."
 
 WORKDIR /var/app
 USER app

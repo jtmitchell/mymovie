@@ -17,8 +17,14 @@ services:
       - REDIS_PASSWORD=1234
 
   db:
+    labels:
+      # access to the Cockroach web gui
+      - "traefik.enable=true"
+      - "traefik.http.routers.crdb.rule=Host(`crdb.localhost`)"
+      - "traefik.http.routers.crdb.entrypoints=web"
+      - "traefik.http.services.crdb.loadbalancer.server.port=8080"
     ports:
-      - "3306:3306"
+      - "26257:26257"
 
   # Traefik provides a "load balancer" reverse-proxy
   # Basic usage
