@@ -98,9 +98,9 @@ User details.
 ### Retrieve [GET]
 
 + Request (application/json)
-    
+
     + Headers
-    
+
             Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 + Response 200 (application/json)
@@ -128,7 +128,7 @@ tell us what the movie details are.
 
 + Parameters
     + id: 1 (number) - Unique identifier for a movie
-        
+
 + Model (application/json)
 
         {
@@ -136,14 +136,14 @@ tell us what the movie details are.
             "name": "Star Trek",
             "poster": "http://ia.media-imdb.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg"
             "year": 2009,
-            "services": 
+            "services":
                 [
                     {
                         "id": 6,
                         "service": "omdb",
                         "service_id": "tt0796366",
                         "updated": "2015-02-24",
-                        "service_data": 
+                        "service_data":
                             {
                                 "Title": "Star Trek",
                                 "Year": "2009",
@@ -182,7 +182,7 @@ tell us what the movie details are.
                             }
                     }
                 ]
-            
+
         }
 
 ### Retrieve [GET]
@@ -190,7 +190,7 @@ tell us what the movie details are.
 + Response 200
 
     [Movie][]
-        
+
 
 ## Watchlist Collection [/watchlists]
 
@@ -207,7 +207,7 @@ Resource for a list of user watchlists.
                         "name": "Star Trek",
                         "poster": "http://ia.media-imdb.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg"
                         "year": 2009,
-                        "services": 
+                        "services":
                             [
                                 {...}
                             ]
@@ -235,7 +235,7 @@ Resource for a list of user watchlists.
 
 + Response 200
        [Watchlist Collection][]
-        
+
 
 ### Create [POST]
 
@@ -247,7 +247,7 @@ Resource for a list of user watchlists.
             Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
     + Body
-    
+
             {
                 "moviename": "Star Trek",
                 "service": "omdb",
@@ -280,7 +280,7 @@ Resource for watchlists.
                     "name": "Star Trek",
                     "poster": "http://ia.media-imdb.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg"
                     "year": 2009,
-                    "services": 
+                    "services":
                         [
                             {...}
                         ]
@@ -436,4 +436,3 @@ Resource for a list of notifications on a watchlist.
             Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmlnX2lhdCI6MTQzNDE1NzcwOSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJqYW1lcyIsImVtYWlsIjoiamFtZXNAbWFpbGluYXRvci5jb20iLCJleHAiOjE0MzQxNzIxMDl9.WUv4q-HvrYRWmp60U3UtTgc11wNOaC4iSUnXYsda4YE
 
 + Response 204 (application/json)
-

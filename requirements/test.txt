@@ -1,8 +1,15 @@
--r base.txt
-mock==1.0.1
-factory-boy==2.5.2
-fake-factory==0.5.0
-flake8==2.4.1
-pep8==1.6.2
-coverage==3.7.1
-coveralls==0.5
+-r production.txt
+coverage
+django-stubs[compatible-mypy]
+djangorestframework-stubs[compatible-mypy]
+factory-boy
+fake-factory
+flake8
+mock
+mypy
+pep8
+pylint
+pylint-django
+pytest
+pytest-django
+types-dj-database-url

@@ -1,55 +1,81 @@
-"""mymovie URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/1.8/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
-Including another URLconf
-    1. Add an import:  from blog import urls as blog_urls
-    2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import include, url
+mymovie URL Configuration.
+"""
+from django.urls import include, path
 from django.contrib import admin
 from django.views.generic.base import RedirectView
+from django.views.generic import TemplateView
+from django.conf import settings
+from rest_framework.schemas import get_schema_view
+from rest_framework.schemas.openapi import SchemaGenerator
 
-from .views import ConfigurationView
-from app.views import HomepageView
-
+from . import views
 
 urlpatterns = [
-    url(r'^favicon\.ico$',
+    path(
+        "favicon.ico",
         RedirectView.as_view(
-            url='/static/app/favicon.png',
+            url="/static/app/favicon.png",
             permanent=False,
-            ),
-        name='favicon'),
-    url(r'^robots\.txt$',
+        ),
+        name="favicon",
+    ),
+    path(
+        "robots.txt",
         RedirectView.as_view(
-            url='/static/app/robots.txt',
+            url="/static/app/robots.txt",
             permanent=False,
-            ),
-        name='robots'),
-
-    url(r'^[/]?$',
-        HomepageView.as_view(),
-        kwargs=dict(title='MyMovie | Coming soon...'),
-        name='homepage'),
-
-    url(r'^api/v1/config',
-        ConfigurationView.as_view(), name='configuration'),
-
-    url(r'^api/', include('users.urls', namespace='api')),
-    url(r'^api/', include('movies.urls', namespace='api')),
-
-    url(r'^api-auth',
-        include('rest_framework.urls', namespace='rest_framework')),
-
-    url('', include('social_django.urls', namespace='social')),
-
-    url(r'^admin/', include(admin.site.urls)),
+        ),
+        name="robots",
+    ),
+    path("version", views.version, name="version"),
+    path(
+        "",
+        views.HomepageView.as_view(),
+        kwargs=dict(title="MyMovie | Coming soon..."),
+        name="homepage",
+    ),
+    path("", include("social_django.urls")),
+    path("admin/", admin.site.urls),
+    path("api/v1/config", views.ConfigurationView.as_view(), name="configuration"),
+    path("api/v1/", include("users.urls")),
+    path("api/v1/", include("movies.urls")),
+    path(
+        "api-auth",
+        include(
+            "rest_framework.urls",
+        ),
+    ),
+    # Add an OpenAPI/Swagger schema endpoint
+    # This will generate and return the YAML for our API
+    path(
+        "/api/openapi",
+        get_schema_view(
+            title="MyMovies API",
+            description="API endpoints for MyMovies",
+            version="1.0.0",
+            url="/api/v1",
+            public=True,
+            permission_classes=[],
+            # urlconf="",
+            generator_class=SchemaGenerator,
+        ),
+        name="openapi-schema-v1",
+    ),
+    path(
+        "/api/openapi/docs",
+        TemplateView.as_view(
+            template_name="openapi/swagger-ui.html",
+            extra_context={
+                "schema_url": "openapi-schema-v1",
+                "title": "MyMovie OpenAPI",
+            },
+        ),
+        name="swagger-ui",
+    ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("__debug__/", include("debug_toolbar.urls")),
+    ]

@@ -1,6 +1,5 @@
 # MyMovie
-[![Build Status](https://travis-ci.org/jtmitchell/mymovie.svg?branch=master)](https://travis-ci.org/jtmitchell/mymovie)
-[![Coverage Status](https://coveralls.io/repos/jtmitchell/mymovie/badge.svg?branch=master)](https://coveralls.io/r/jtmitchell/mymovie?branch=master)
+[Build Status](https://github.com/jtmitchell/mymovie/actions/workflows/main.yaml/badge.svg)
 
 
 ## Overview

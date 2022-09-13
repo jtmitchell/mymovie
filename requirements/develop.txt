@@ -1,4 +1,2 @@
--r base.txt
-django-debug-toolbar==1.7
-pydevd==1.0.0   # debug for Eclipse and PyCharm
-ptvsd==3.0.0    # debug for Visual Studio Code
+-r test.txt
+black

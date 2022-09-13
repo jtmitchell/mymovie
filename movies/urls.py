@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
-from django.conf.urls import include, url
-from rest_framework_nested.routers import SimpleRouter, NestedSimpleRouter
+"""
+Urls for the movie models.
+"""
+from django.urls import include, path
+from rest_framework_nested.routers import SimpleRouter, NestedSimpleRouter  # type: ignore
 
 from .views import MovieViewSet, WatchlistViewSet, NotificationViewSet
 
 router = SimpleRouter(trailing_slash=False)
 router.include_format_suffixes = False
-router.register(r'v1/movies', MovieViewSet, base_name='movie')
-router.register(r'v1/watchlists', WatchlistViewSet, base_name='watchlist')
+router.register("movies", MovieViewSet, basename="movie")
+router.register("watchlists", WatchlistViewSet, basename="watchlist")
 
 # register the nested urls for movie routes
-wl_router = NestedSimpleRouter(router, r'v1/watchlists',
-                               lookup='watchlist', trailing_slash=False)
-wl_router.register(r'notifications', NotificationViewSet,
-                   base_name='notification')
+wl_router = NestedSimpleRouter(
+    router, "watchlists", lookup="watchlist", trailing_slash=False
+)
+wl_router.register("notifications", NotificationViewSet, basename="notification")
 
-urlpatterns = [
-    url(r'', include(router.urls, namespace='movie')),
-    url(r'', include(wl_router.urls, namespace='movie'))
-]
+urlpatterns = [path("", include(router.urls)), path("", include(wl_router.urls))]

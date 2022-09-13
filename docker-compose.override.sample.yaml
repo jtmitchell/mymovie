@@ -1,0 +1,69 @@
+# Use this file to override the main docker-compose
+# Enable the ports HERE if you wish to access the services on localhost outside docker
+version: "3"
+
+# Use this to link the default network to an external one you created
+networks:
+  default:
+    name: shared_net
+    external: true
+
+services:
+
+  cache:
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=1234
+
+  db:
+    labels:
+      # access to the Cockroach web gui
+      - "traefik.enable=true"
+      - "traefik.http.routers.crdb.rule=Host(`crdb.localhost`)"
+      - "traefik.http.routers.crdb.entrypoints=web"
+      - "traefik.http.services.crdb.loadbalancer.server.port=8080"
+    ports:
+      - "26257:26257"
+
+  # Traefik provides a "load balancer" reverse-proxy
+  # Basic usage
+  #   https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/
+  # Configured for HTTPS and DNS challenge for Let's Encrypt
+  #   https://doc.traefik.io/traefik/user-guides/docker-compose/acme-dns/
+  traefik:
+    image: "traefik:v2.4"
+    command:
+      # - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  # SMTP server for test emails
+  # smtp port 1025
+  # http port 8025 (exposed at 80)
+  email:
+    labels:
+      # These labels enable traefik to route traffic to the container
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailhog.rule=Host(`mailhog.localhost`)"
+      - "traefik.http.routers.mailhog.entrypoints=web"
+      - "traefik.http.services.mailhog.loadbalancer.server.port=8025"
+    entrypoint: ["/bin/sh", "-c", "MailHog &>/dev/null"]
+
+  web:
+    # Use these labels along with Traefik above to enable "load balancing"
+    # and being able to scale up the running containers
+    labels:
+      # These labels enable traefik to route traffic to the container
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`movies.localhost`)"
+      - "traefik.http.routers.app.entrypoints=web"
+      - "traefik.http.services.app.loadbalancer.server.port=80"
