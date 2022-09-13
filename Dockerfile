@@ -52,6 +52,7 @@ FROM ${baseimage} as prod
 RUN apt-get update && apt install -y --no-install-recommends \
     python3 python3-pip \
     tzdata \
+    netcat-openbsd \
     mysql-client libmysqlclient21 \
     && rm -rf /var/lib/apt/lists/*
 

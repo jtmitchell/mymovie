@@ -1,6 +1,10 @@
 # flake8: noqa
 # pylint: disable=wildcard-import, unused-wildcard-import
 
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
+
 from .base import *
 
 DEBUG = True

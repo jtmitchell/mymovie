@@ -13,5 +13,6 @@ JustWatch==0.5.1
 kubernetes-wsgi==1.1
 Markdown==3.4.1
 mysqlclient==2.1.1
+python-dotenv==0.21
 social-auth-app-django==5.0.0
 whitenoise==6.2.0

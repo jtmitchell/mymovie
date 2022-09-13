@@ -35,7 +35,7 @@ services:
   web:
     # Override the wsgi entrypoint. Run the development server listening on all interfaces
     # debugpy docs https://github.com/microsoft/debugpy
-    entrypoint: ["sh", "-c", "pip install --no-cache -t /var/tmp/ debugpy && python /var/tmp/debugpy --listen 0.0.0.0:5678 /var/app/manage.py runserver 0.0.0.0:8000"]
+    entrypoint: ["sh", "-c", "pip install --no-cache -t /var/tmp/ debugpy && ./bin/wait-for db.localhost:3306 -- python /var/tmp/debugpy --listen 0.0.0.0:5678 /var/app/manage.py runserver 0.0.0.0:8000"]
     ports:
       - "5678:5678" # debug port
     image: mymovie
@@ -50,12 +50,12 @@ services:
       - db
       - cache
     environment:
-      SERVER_PORT: 8000
-      DJANGO_SETTINGS_MODULE: app.settings.production
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-'dev-key'}
-      GOOGLE_PLUS_KEY: ${GOOGLE_PLUS_KEY:-''}
-      GOOGLE_PLUS_SECRET: ${GOOGLE_PLUS_SECRET:-''}
-      DATABASE_URL: "mysql://movies:movies@db.localhost:3306/movies"
+      - SERVER_PORT=8000
+      - DJANGO_SETTINGS_MODULE=app.settings.production
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-'dev-key'}
+      - GOOGLE_PLUS_KEY=${GOOGLE_PLUS_KEY:-''}
+      - GOOGLE_PLUS_SECRET=${GOOGLE_PLUS_SECRET:-''}
+      - DATABASE_URL=mysql://movies:movies@db.localhost:3306/movies
     networks:
       default:
         aliases:

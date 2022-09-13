@@ -21,6 +21,10 @@ services:
       - "traefik.http.services.email.loadbalancer.server.port=8025"
     entrypoint: ["/bin/sh", "-c", "MailHog &>/dev/null"]
 
+  db:
+    ports:
+      - "3306:3306"
+
   web:
     # Use these labels along with Traefik above to enable "load balancing"
     # and being able to scale up the running containers
@@ -31,4 +35,4 @@ services:
       - "traefik.http.routers.app.entrypoints=web"
       - "traefik.http.services.app.loadbalancer.server.port=8000"
     environment:
-      DJANGO_SETTINGS_MODULE: app.settings.development
+      - DJANGO_SETTINGS_MODULE=app.settings.development
