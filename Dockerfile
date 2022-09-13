@@ -63,7 +63,7 @@ COPY --from=build /var/app /var/app
 RUN groupadd --force --gid 1000 app
 RUN useradd --uid 1000 --gid 1000 --no-create-home app
 
-LABEL Version="1.0.0-rc-0"
+LABEL Version="1.0.0-rc-1"
 LABEL Description="Application for tracking movies."
 
 WORKDIR /var/app
