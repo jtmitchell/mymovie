@@ -1,0 +1,33 @@
+# Files to not copy across to the docker image
+.vscode/
+.env
+.git/
+
+# from the gitignore
+__pycache__/
+*.py[cod]
+*$py.class
+pip-log.txt
+pip-delete-this-directory.txt
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+*.cover
+.hypothesis/
+local_settings.py
+.venv
+venv/
+ENV/
+
+
+# Ignore unnecessary files inside allowed directories
+# This should go after the allowed directories
+**/*~
+**/*.log
+**/.DS_Store
+**/Thumbs.db
+
+*.sql

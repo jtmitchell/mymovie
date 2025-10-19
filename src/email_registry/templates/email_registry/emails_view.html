@@ -1,0 +1,28 @@
+{% extends "admin/change_list.html" %}
+{% load django_htmx %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">Home</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label='email_registry' %}">Email Registry</a>
+&rsaquo; Preview
+</div>
+{% endblock %}
+
+{% block search %}{% endblock %}
+
+{% block result_list %}
+<div id="content-main">
+  <div class="row">
+    <ol>
+      {% for item in emails %}
+      <li>
+        <a href="{% url 'admin:preview_email' identifier=item %}">{{ item }}</a>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</div>
+{% endblock %}
+
+{% block pagination %}{% endblock %}

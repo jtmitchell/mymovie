@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+---
+name: Run tests
+
+on:
+  pull_request:
+  workflow_dispatch:  # Allows to trigger the workflow manually in GitHub UI
+
+jobs:
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.pipeline_actions
+      DB_NAME: webapp
+      DB_USER: webapp
+      DB_PASSWORD: webapp1234
+      DATABASE_URL: postgres://${{ env.DB_USER }}:${{ env.DB_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
+
+    services:
+      postgres:
+        image: bitnami/postgresql:16
+        ports:
+          - 5432:5432
+        options: --health-cmd="pg_isready -U postgres -h 127.0.0.1 -p 5432" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          ALLOW_EMPTY_PASSWORD: no
+          POSTGRESQL_POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+          POSTGRESQL_DATABASE: ${{ env.DB_NAME }}
+          POSTGRESQL_USERNAME: ${{ env.DB_USER }}
+          POSTGRESQL_PASSWORD: ${{ env.DB_PASSWORD }}
+      redis:
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Setup Python
+        run: uv python install
+
+      - name: Code checks
+        run: |
+          uv run ruff check .
+          uv run pre-commit run bandit --all-files
+
+      - name: Tests
+        run: |
+          uv run pytest

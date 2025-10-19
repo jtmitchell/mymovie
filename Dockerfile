@@ -1,75 +1,89 @@
-ARG baseimage=ubuntu:22.04
+# syntax=docker.io/docker/dockerfile:1.7-labs
+# Allows use of --exclude in the COPY
 
-FROM ${baseimage} as build
+# ---
+# Base linux layer
+# ---
+FROM ubuntu:24.04 AS linux-base
 
-ARG DEBIAN_FRONTEND=noninteractive
+# Assure UTF-8 encoding is used.
+ENV LC_CTYPE=C.utf8
+# Location of the virtual environment
+ENV UV_PROJECT_ENVIRONMENT="/venv"
+# Location of the python installation via uv
+ENV UV_PYTHON_INSTALL_DIR="/python"
+# Byte compile the python files on installation
+ENV UV_COMPILE_BYTECODE=1
+# Python verision to use
+ENV UV_PYTHON=python3.12
+# Tweaking the PATH variable for easier use
+ENV PATH="$UV_PROJECT_ENVIRONMENT/bin:$PATH"
+# Update debian
+RUN apt-get update
+RUN apt-get upgrade -y
 
-RUN apt-get update && apt-get install -y \
-    python3 python3-venv python3-pip \
-    python3-dev \
+# Install general required dependencies
+RUN apt-get install --no-install-recommends -y tzdata
+
+# ---
+# Base Python install
+# ---
+FROM linux-base AS python-base
+# Install debian dependencies
+RUN apt-get install --no-install-recommends -y \
     build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+    gettext
 
-RUN python3 -m venv --copies /var/.venv
-ENV PATH="/var/.venv/bin:$PATH"
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-WORKDIR /var/app
-COPY requirements requirements/
-COPY requirements.txt requirements.txt
-RUN python3 -m pip install --no-cache -r requirements.txt
+# Create virtual environment and install dependencies
+COPY pyproject.toml ./
+COPY uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
 
-COPY manage.py .
-COPY bin bin/
-COPY app app/
-COPY movies movies/
-COPY users users/
-COPY utils utils/
+# ---
+# Install the Python app
+# ---
+FROM python-base AS builder-base
 
-RUN chmod +x /var/app/bin/start-app
-
-# Collect the static files
-ARG DJANGO_SETTINGS_MODULE=app.settings.dockerbuild
-RUN python3 manage.py collectstatic --noinput --no-color
-
-# Stage for the tests
-FROM build as test
+ARG DJANGO_SETTINGS_MODULE=config.settings.development
+ARG DB_USER=
+ARG DB_PASSWORD=
+ARG DATABASE_URL=
+ARG DJANGO_SECRET_KEY=
 
 WORKDIR /var/app
-RUN python3 -m pip install --no-cache -r requirements/test.txt
-COPY ["mypy.ini", "pytest.ini", "/var/app/"]
-ARG DJANGO_SETTINGS_MODULE=app.settings.test
-RUN mypy /var/app/
-RUN pytest /var/app/
+COPY src/ /var/app
+COPY ./docker /var/docker
 
-# Final stage.
-FROM ${baseimage} as prod
+# Build static files
+RUN uv run python manage.py collectstatic --no-input
 
-ARG DEBIAN_FRONTEND=noninteractive
+# ---
+# Development container image
+# ---
+FROM builder-base AS devcontainer
 
-RUN apt-get update && apt install -y --no-install-recommends \
-    python3 python3-pip \
-    tzdata \
-    netcat-openbsd \
-    libpq5 postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+# Install the development packages
+RUN uv sync --frozen --no-install-project
 
-ENV TZ="Pacific/Auckland"
-ENV PATH="/var/.venv/bin:$PATH"
-COPY --from=build /var/.venv /var/.venv
-COPY --from=build /var/app /var/app
-
-# Create 'app' user with id=1000
-RUN groupadd --force --gid 1000 app
-RUN useradd --uid 1000 --gid 1000 --no-create-home app
-
-LABEL Version="1.0.0-rc-1"
-LABEL Description="Application for tracking movies."
-
+# Start the development server
 WORKDIR /var/app
-USER app
-VOLUME ["/var/tmp"]
-EXPOSE 8000 9000
-ENV SERVER_PORT=8000
+EXPOSE 8000
+CMD ["bash", "/var/docker/dev-entrypoint.sh"]
 
-ENTRYPOINT ["/var/app/bin/start-app"]
+# ---
+# Production container image
+# ---
+FROM linux-base AS production
+
+# Copy python, virtual env and static assets
+COPY --from=builder-base $UV_PYTHON_INSTALL_DIR $UV_PYTHON_INSTALL_DIR
+COPY --from=builder-base $UV_PROJECT_ENVIRONMENT $UV_PROJECT_ENVIRONMENT
+COPY --from=builder-base --exclude=uv.lock --exclude=pyproject.toml /var/app /var/app
+
+# Start the application server
+WORKDIR /var/app
+EXPOSE 8000
+CMD ["bash", "/var/docker/entrypoint.sh"]
