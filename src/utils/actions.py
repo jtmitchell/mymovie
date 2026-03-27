@@ -2,10 +2,10 @@ import csv
 import datetime
 
 from django.http import HttpResponse
-from django.utils.timezone import localtime, get_current_timezone
+from django.utils.timezone import get_current_timezone, localtime
 
 
-def export_as_csv_action(  # noqa
+def export_as_csv_action(
     description="Export selected objects as CSV file",
     fields=None,
     exclude=None,
@@ -40,7 +40,7 @@ def export_as_csv_action(  # noqa
 
     """
 
-    def export_as_csv(modeladmin, _, queryset):  # noqa
+    def export_as_csv(modeladmin, _, queryset):
         """
         Generic csv export admin action.
 
@@ -83,9 +83,7 @@ def export_as_csv_action(  # noqa
                 except Exception:
                     raise
                 if isinstance(value, (datetime.datetime, datetime.date)):
-                    row.append(
-                        str(localtime(value, get_current_timezone())).encode("utf-8")
-                    )
+                    row.append(str(localtime(value, get_current_timezone())).encode("utf-8"))
                 else:
                     row.append(str(value).encode("utf-8"))
             writer.writerow(row)

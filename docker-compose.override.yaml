@@ -1,43 +1,68 @@
-# Use this file to override the main docker-compose
-# Enable the ports HERE if you wish to access the services on localhost outside docker
-version: "3"
+configs:
+  traefik_static:
+    content: |
+      api:
+        insecure: true
 
-# Use this to link the default network to an external one you created
-networks:
-  default:
-    name: shared_net
-    external: true
+      providers:
+        docker:
+          exposedByDefault: false
+        file:
+          filename: /etc/traefik/tls.yml
+
+      entryPoints:
+        web:
+          address: ":80"
+          http:
+            redirections:
+              entryPoint:
+                to: websecure
+                scheme: https
+        websecure:
+          address: ":443"
+  traefik_tls:
+    content: |
+      tls:
+        certificates:
+          - certFile: /certs/local-cert.pem
+            keyFile: /certs/local-key.pem
+        stores:
+          default:
+            defaultCertificate:
+              certFile: /certs/local-cert.pem
+              keyFile: /certs/local-key.pem
 
 services:
-  # SMTP server for test emails
-  # smtp port 1025
-  # http port 8025 (exposed at 80)
-  email:
-    labels:
-      # These labels enable traefik to route traffic to the container
-      - "traefik.enable=true"
-      - "traefik.http.routers.email.rule=Host(`mailhog.localhost`)"
-      - "traefik.http.routers.email.entrypoints=web"
-      - "traefik.http.services.email.loadbalancer.server.port=8025"
-    entrypoint: ["/bin/sh", "-c", "MailHog &>/dev/null"]
-
-  db:
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.crdb.rule=Host(`crdb.localhost`)"
-      - "traefik.http.routers.crdb.entrypoints=web"
-      - "traefik.http.services.crdb.loadbalancer.server.port=8080"
+  traefik:
+    image: traefik:v3.6
+    command:
+      - --configfile=/etc/traefik/traefik.yml
     ports:
-      - "26257:26257"
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # Traefik dashboard\
+    configs:
+      - source: traefik_static
+        target: /etc/traefik/traefik.yml
+      - source: traefik_tls
+        target: /etc/traefik/tls.yml
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/james/work/localhost-certs/local-cert.pem:/certs/local-cert.pem:ro
+      - /home/james/work/localhost-certs/local-key.pem:/certs/local-key.pem:ro
 
-  web:
-    # Use these labels along with Traefik above to enable "load balancing"
-    # and being able to scale up the running containers
+  mailhog:
     labels:
-      # These labels enable traefik to route traffic to the container
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailhog.rule=Host(`mailhog.localhost`)"
+      - "traefik.http.routers.mailhog.entrypoints=websecure"
+      - "traefik.http.routers.mailhog.tls=true"
+      - "traefik.http.services.mailhog.loadbalancer.server.port=8025"
+
+  webapp:
+    labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`movies.localhost`)"
-      - "traefik.http.routers.app.entrypoints=web"
+      - "traefik.http.routers.app.entrypoints=websecure"
+      - "traefik.http.routers.app.tls=true"
       - "traefik.http.services.app.loadbalancer.server.port=8000"
-    environment:
-      - DJANGO_SETTINGS_MODULE=app.settings.development

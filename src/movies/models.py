@@ -6,7 +6,6 @@ from jsonfield import JSONField  # type: ignore
 
 from movies.service import omdb
 
-
 SERVICE_OMDB = "omdb"
 SERVICE_CHOICES = ((SERVICE_OMDB, "Open Movie Database"),)
 
@@ -24,9 +23,7 @@ class MovieManager(models.Manager):
 
         """
         movie = None
-        qs = self.filter(
-            servicemovie__service=service, servicemovie__service_id=service_id
-        )
+        qs = self.filter(servicemovie__service=service, servicemovie__service_id=service_id)
 
         if qs.exists():
             return qs[0]

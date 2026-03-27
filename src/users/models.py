@@ -3,7 +3,6 @@ from django.core.files.storage import get_storage_class
 from django.db import models
 from django.db.models.signals import post_save
 
-
 static_storage = get_storage_class(settings.STATICFILES_STORAGE)()
 
 

@@ -1,4 +1,4 @@
-target-version = "py312"
+target-version = "py314"
 # Exclude a variety of commonly ignored directories.
 extend-exclude = [
     ".bzr",

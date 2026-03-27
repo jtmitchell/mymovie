@@ -14,6 +14,7 @@ class EmailRegistryAdmin(admin.ModelAdmin):
     """
     Registry for email functions.
     """
+
     def get_urls(self):
         """
         Add admin urls.

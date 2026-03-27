@@ -1,12 +1,12 @@
 from django.conf import settings
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.request import Request
-from rest_framework.decorators import api_view
-
-from movies.models import SERVICE_CHOICES, NOTIFICATION_CHOICES
-from rest_framework.views import APIView
 from django.views.generic.base import TemplateView
+from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from movies.models import NOTIFICATION_CHOICES, SERVICE_CHOICES
 
 from .version import VERSION
 

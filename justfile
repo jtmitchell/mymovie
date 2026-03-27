@@ -1,8 +1,8 @@
 # This file will load a .env file to allow overriding values.
 
 set dotenv-load := true
-
-VERSION := shell("uv version --short")
+set shell := ["bash", "-c"]
+set working-directory := 'src/'
 
 # This list of available targets
 default:
@@ -10,37 +10,40 @@ default:
 
 # Install python DEV dependancies
 install:
-    uv sync
-    uv run pre-commit install --hook-type pre-commit
+    pdm install --frozen-lockfile --plugins
+    pdm run pre-commit install --hook-type pre-commit
 
-# uv run a command
+# pdm run a command
 run +options:
-    uv run {{options}}
+    pdm run {{ options }}
 
 # Run the tests
 test +options="":
-    uv run pytest src/ {{options}}
+    pdm run pytest {{ options }}
 
 # Build the docker image
 build target="production":
     docker build -f Dockerfile \
     --target production \
-    --label "org.opencontainers.image.revision"="v{{VERSION}}" \
+    --label "org.opencontainers.image.revision"="v$(pdm version)" \
     .
 
 version:
-    @echo {{VERSION}}
+    @pdm version
 
-# Run the uv version command
+# Run the pdm bump version command
 bumpversion +options="":
-    uv version {{options}}
+    pdm bump {{ options }}
 
-# Start new develpment cycle with new patch and release candidate
+# Start new development cycle with new patch and release candidate
 bump_patch +options="":
-    uv version --bump rc {{options}} --commit
+    pdm bump pre-release --pre alpha {{ options }}
+    git add pyproject.toml && git commit -m "Bump version to $(pdm version)"
     git push
 
 # Bump the version for a release. Make tag and commit
 bump_release +options="":
-    uv version --bump stable {{options}} --tag --commit
+    pdm bump release {{ options }}
+    git add pyproject.toml && git commit -m "Release v$(pdm version)"
+    git tag "v$(pdm version)"
     git push && git push --tags

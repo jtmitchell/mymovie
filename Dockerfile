@@ -2,88 +2,63 @@
 # Allows use of --exclude in the COPY
 
 # ---
-# Base linux layer
+# Builder layer
 # ---
-FROM ubuntu:24.04 AS linux-base
+ARG PYTHON_VERSION=3.14
+ARG PYTHON_BASE=${PYTHON_VERSION}-slim
 
-# Assure UTF-8 encoding is used.
-ENV LC_CTYPE=C.utf8
-# Location of the virtual environment
-ENV UV_PROJECT_ENVIRONMENT="/venv"
-# Location of the python installation via uv
-ENV UV_PYTHON_INSTALL_DIR="/python"
-# Byte compile the python files on installation
-ENV UV_COMPILE_BYTECODE=1
-# Python verision to use
-ENV UV_PYTHON=python3.12
-# Tweaking the PATH variable for easier use
-ENV PATH="$UV_PROJECT_ENVIRONMENT/bin:$PATH"
-# Update debian
-RUN apt-get update
-RUN apt-get upgrade -y
+# build stage
+FROM python:$PYTHON_BASE AS builder
 
-# Install general required dependencies
-RUN apt-get install --no-install-recommends -y tzdata
+ARG DJANGO_SETTINGS_MODULE=config.settings.production
+ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+ENV DB_USER=""
+ENV DB_PASSWORD=""
+ENV DATABASE_URL=""
+ENV DJANGO_SECRET_KEY="build-secret"
 
-# ---
-# Base Python install
-# ---
-FROM linux-base AS python-base
-# Install debian dependencies
-RUN apt-get install --no-install-recommends -y \
-    build-essential \
-    gettext
-
-# Install uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
-
-# Create virtual environment and install dependencies
-COPY pyproject.toml ./
-COPY uv.lock ./
-RUN uv sync --frozen --no-dev --no-install-project
-
-# ---
-# Install the Python app
-# ---
-FROM python-base AS builder-base
-
-ARG DJANGO_SETTINGS_MODULE=config.settings.development
-ARG DB_USER=
-ARG DB_PASSWORD=
-ARG DATABASE_URL=
-ARG DJANGO_SECRET_KEY=
+# install PDM
+RUN pip install -U pdm
+# disable update check
+ENV PDM_CHECK_UPDATE=false
 
 WORKDIR /var/app
-COPY src/ /var/app
-COPY ./docker /var/docker
 
+# Install dependencies only (without the project) for better layer caching
+RUN --mount=type=cache,target=/root/.cache/pdm \
+    --mount=type=bind,source=pdm.lock,target=pdm.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    python3 -m venv /venv && pdm use -f /venv && \
+    pdm install --frozen-lockfile --production --no-self --no-editable
+
+# Update PATH to include venv
+ENV PATH="/var/app/.venv/bin:$PATH"
+
+COPY ./src /var/app
+
+# Install the project itself
+RUN --mount=type=cache,target=/root/.cache/pdm \
+    --mount=type=bind,source=pdm.lock,target=pdm.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    pdm install --frozen-lockfile --production --no-editable
 # Build static files
-RUN uv run python manage.py collectstatic --no-input
-
-# ---
-# Development container image
-# ---
-FROM builder-base AS devcontainer
-
-# Install the development packages
-RUN uv sync --frozen --no-install-project
-
-# Start the development server
-WORKDIR /var/app
-EXPOSE 8000
-CMD ["bash", "/var/docker/dev-entrypoint.sh"]
+RUN /venv/bin/python manage.py collectstatic --no-input
 
 # ---
 # Production container image
 # ---
-FROM linux-base AS production
+FROM python:$PYTHON_BASE AS production
+
+WORKDIR /var/app
 
 # Copy python, virtual env and static assets
-COPY --from=builder-base $UV_PYTHON_INSTALL_DIR $UV_PYTHON_INSTALL_DIR
-COPY --from=builder-base $UV_PROJECT_ENVIRONMENT $UV_PROJECT_ENVIRONMENT
-COPY --from=builder-base --exclude=uv.lock --exclude=pyproject.toml /var/app /var/app
+COPY --from=builder --exclude=pdm.lock --exclude=pyproject.toml /var/app /var/app
+COPY --from=builder /venv /venv
 
+# Update the PATH
+ENV PATH="/venv/bin:$PATH"
 # Start the application server
 WORKDIR /var/app
 EXPOSE 8000
-CMD ["bash", "/var/docker/entrypoint.sh"]
+ENTRYPOINT ["/venv/bin/python3"]
+CMD ["serve.py"]

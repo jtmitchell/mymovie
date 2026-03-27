@@ -13,9 +13,9 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 import datetime
 import os
-import dj_database_url
-
 from pathlib import Path
+
+import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -176,7 +176,6 @@ TIME_ZONE = "Pacific/Auckland"
 
 USE_I18N = True
 
-USE_L10N = True
 
 USE_TZ = True
 
@@ -263,7 +262,7 @@ SIMPLE_JWT = {
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",  # noqa: E501
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
     "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",

@@ -9,6 +9,7 @@ class EmailRegistryModel(models.Model):
     """
     Empty registry model to allow Admin pages.
     """
+
     class Meta:
         managed = False
         app_label = "email_registry"

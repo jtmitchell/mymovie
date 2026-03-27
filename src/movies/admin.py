@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from movies.models import ServiceMovie, Movie, Notification, Watchlist
+from movies.models import Movie, Notification, ServiceMovie, Watchlist
 from utils import export_as_csv_action
 
 
@@ -49,9 +49,7 @@ class WatchlistAdmin(admin.ModelAdmin):
         """
         notifications = []
         for item in obj.notification_set.all():
-            notifications.append(
-                f"{item.get_type_display()}/{'Y' if item.notified else 'N'}"
-            )
+            notifications.append(f"{item.get_type_display()}/{'Y' if item.notified else 'N'}")
         return " ".join(notifications)
 
     list_display = ("watchlist_movie_name", "watchlist_user_name", "notifications")

@@ -71,7 +71,7 @@ class TestMovieApi(TokenTestCase):
         url = reverse("movie-detail", kwargs={"pk": movie.pk})
         response = self.client.get(
             url,
-            HTTP_AUTHORIZATION=self.auth,
+            headers={"authorization": self.auth}, 
             format="json",
         )
 
@@ -89,7 +89,7 @@ class TestMovieApi(TokenTestCase):
         url = reverse("watchlist-detail", kwargs={"pk": watchlist.pk})
         response = self.client.get(
             url,
-            HTTP_AUTHORIZATION=self.auth,
+            headers={"authorization": self.auth}, 
             format="json",
         )
 
@@ -105,7 +105,7 @@ class TestMovieApi(TokenTestCase):
         url = reverse("watchlist-detail", kwargs={"pk": watchlist.pk})
         response = self.client.get(
             url,
-            HTTP_AUTHORIZATION=f"Bearer {self.create_token(watchlist.user)}",
+            headers={"authorization": f"Bearer {self.create_token(watchlist.user)}"}, 
             format="json",
         )
 
@@ -134,7 +134,7 @@ class TestMovieApi(TokenTestCase):
             response = self.client.post(
                 url,
                 data=data,
-                HTTP_AUTHORIZATION=self.auth,
+                headers={"authorization": self.auth}, 
                 format="json",
             )
 
@@ -154,7 +154,7 @@ class TestMovieApi(TokenTestCase):
         url = reverse("watchlist-detail", kwargs={"pk": watchlist.pk})
         response = self.client.delete(
             url,
-            HTTP_AUTHORIZATION=f"Bearer {self.create_token(watchlist.user)}",
+            headers={"authorization": f"Bearer {self.create_token(watchlist.user)}"}, 
             format="json",
         )
 
@@ -163,7 +163,7 @@ class TestMovieApi(TokenTestCase):
             status.HTTP_204_NO_CONTENT,
             f"Got error: {response.content}",
         )
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             Watchlist.objects.filter(pk=watchlist.pk),
             [],
             "Deleted watchlist is in database",
@@ -175,7 +175,7 @@ class TestMovieApi(TokenTestCase):
         url = reverse("watchlist-detail", kwargs={"pk": watchlist.pk})
         response = self.client.delete(
             url,
-            HTTP_AUTHORIZATION=self.auth,
+            headers={"authorization": self.auth}, 
             format="json",
         )
 
@@ -191,7 +191,7 @@ class TestMovieApi(TokenTestCase):
         url = reverse("notification-detail", args=[notify.watchlist.pk, notify.pk])
         response = self.client.get(
             url,
-            HTTP_AUTHORIZATION=f"Bearer {self.create_token(notify.watchlist.user)}",
+            headers={"authorization": f"Bearer {self.create_token(notify.watchlist.user)}"}, 
             format="json",
         )
 
@@ -209,7 +209,7 @@ class TestMovieApi(TokenTestCase):
         url = reverse("notification-detail", args=[notify.watchlist.pk, notify.pk])
         response = self.client.get(
             url,
-            HTTP_AUTHORIZATION=self.auth,
+            headers={"authorization": self.auth}, 
             format="json",
         )
 
@@ -225,7 +225,7 @@ class TestMovieApi(TokenTestCase):
         url = reverse("notification-detail", args=[notify.watchlist.pk, notify.pk])
         response = self.client.delete(
             url,
-            HTTP_AUTHORIZATION=f"Bearer {self.create_token(notify.watchlist.user)}",
+            headers={"authorization": f"Bearer {self.create_token(notify.watchlist.user)}"}, 
             format="json",
         )
 
@@ -234,7 +234,7 @@ class TestMovieApi(TokenTestCase):
             status.HTTP_204_NO_CONTENT,
             f"Got error: {response.content}",
         )
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             Notification.objects.filter(pk=notify.pk),
             [],
             "Deleted notification is in database",

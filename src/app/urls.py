@@ -1,11 +1,12 @@
 """
 mymovie URL Configuration.
 """
-from django.urls import include, path
-from django.contrib import admin
-from django.views.generic.base import RedirectView
-from django.views.generic import TemplateView
+
 from django.conf import settings
+from django.contrib import admin
+from django.urls import include, path
+from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
 from rest_framework.schemas import get_schema_view
 from rest_framework.schemas.openapi import SchemaGenerator
 

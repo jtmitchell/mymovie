@@ -1,6 +1,7 @@
 """
 Urls for the user models.
 """
+
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (  # type: ignore
@@ -8,6 +9,7 @@ from rest_framework_simplejwt.views import (  # type: ignore
     TokenRefreshView,
     TokenVerifyView,
 )
+
 from .views import UserViewSet
 
 router = DefaultRouter(trailing_slash=False)

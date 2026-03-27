@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .models import Movie, Watchlist, Notification
-from .serializers import MovieSerializer, WatchlistSerializer, NotificationSerializer
+from .models import Movie, Notification, Watchlist
+from .serializers import MovieSerializer, NotificationSerializer, WatchlistSerializer
 
 
 class MovieViewSet(viewsets.ModelViewSet):

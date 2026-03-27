@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from .models import Movie, Watchlist, Notification, ServiceMovie
 from users.serializers import UserSerializer
+
+from .models import Movie, Notification, ServiceMovie, Watchlist
 
 
 class ServiceSerializer(serializers.ModelSerializer):

@@ -1,0 +1,83 @@
+{
+  "name": "MyMovie Server",
+  "workspaceFolder": "/workspace",
+  "dockerComposeFile": [
+    "docker-compose.yaml",
+    // "../docker-compose.override.yaml",
+  ],
+  "service": "webapp",
+  "remoteUser": "vscode",
+  // "build": {
+  //   "dockerfile": "Dockerfile",
+  //   "context": "..",
+  //   "args": {
+  //     "BASE_IMAGE": "ubuntu",
+  //   },
+  // },
+  "appPort": [443, 5678],
+  "forwardPorts": [443, 5678],
+  "portsAttributes": {
+    "443": {
+      "label": "HTTPS",
+      "protocol": "https",
+      "onAutoForward": "openBrowser",
+    },
+    "5678": {
+      "label": "debugpy",
+      "onAutoForward": "silent",
+    },
+  },
+
+  // postCreateCommand runs once on container creation: sync deps, install hooks,
+  // and write PATH into ~/.profile (read by Zed) and ~/.bashrc (interactive shells)
+  "postCreateCommand": "pdm install --frozen-lockfile --plugins && pdm run pre-commit install && grep -qxF 'export PATH=\"/workspace/.venv/bin:$PATH\"' ~/.profile || echo 'export PATH=\"/workspace/.venv/bin:$PATH\"' | tee -a ~/.profile >> ~/.bashrc",
+  // postStartCommand runs every time the container starts — re-syncs deps in case
+  // pyproject.toml changed (e.g. after a git pull) without rebuilding the container
+  "postStartCommand": "pdm sync",
+  "containerEnv": {
+    "DISPLAY": "dummy",
+  },
+  "remoteEnv": {
+    "PATH": "/home/vscode/.venv/bin:${containerEnv:PATH}",
+  },
+  "mounts": [
+    "type=bind,source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly",
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/va-h/devcontainers-features/difftastic:1": {},
+    "ghcr.io/jsburckhardt/devcontainer-features/just:1": {},
+    "ghcr.io/devcontainers-extra/features/pdm:2": {},
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "charliermarsh.ruff",
+        "donjayamanne.githistory",
+        "editorconfig.editorconfig",
+        "iulian-radu-at.save-restore-editors",
+        "mk12.better-git-line-blame",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "redhat.vscode-yaml",
+        "skellock.just",
+        "tamasfe.even-better-toml",
+        "typefox.open-collaboration-tools",
+        "yzhang.markdown-all-in-one",
+        "detachhead.basedpyright",
+      ],
+      "settings": {
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "files.watcherExclude": {
+          ".venv/**": true,
+          "**/__pycache__/**": true,
+          "**/.mypy_cache/**": true,
+          "**/.pytest_cache/**": true,
+        },
+        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
+      },
+    },
+  },
+}

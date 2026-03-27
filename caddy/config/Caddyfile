@@ -1,8 +1,0 @@
-mailhog.localhost {
-    reverse_proxy mailhog:8025
-    tls internal
-}
-webapp.localhost {
-    reverse_proxy webapp:8000
-    tls internal
-}

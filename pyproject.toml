@@ -1,55 +1,65 @@
 [project]
-name = "mymovie"
+name = "mymovie-server"
 version = "0.1.0"
-description = "Webapp to track movie releases from a wishlist, so you don't have to"
+description = "Default template for PDM package"
 readme = "README.md"
-requires-python = "==3.12.*"
+requires-python = "==3.14.*"
 dependencies = [
-    "dj-database-url>=3.0.1",
-    "django>=5.2.7",
-    "django-allauth[mfa]>=65.12.1",
-    "django-filter>=25.2",
-    "django-htmx>=1.26.0",
-    "djangorestframework>=3.16.1",
-    "djangorestframework-simplejwt[crypto]>=5.5.1",
-    "drf-nested-routers>=0.95.0",
-    "jsonfield>=3.2.0",
-    "kubernetes-wsgi>=1.2",
-    "markdown>=3.9",
-    "psycopg2>=2.9.11",
-    "psycopg2-binary>=2.9.11",
-    "python-dotenv>=1.1.1",
-    "whitenoise>=6.11.0",
+    "dj-database-url",
+    "django",
+    "django-allauth[mfa]",
+    "django-filter",
+    "django-htmx",
+    "django-ninja",
+    "granian",
+    "markdown",
+    "psycopg2-binary",
+    "python-dotenv",
+    "whitenoise",
 ]
+authors = [
+    {name = "James Mitchell", email = "say.wibble@gmail.com"},
+]
+license = {text = "MIT"}
 
 [dependency-groups]
 dev = [
-    "bandit>=1.8.6",
-    "coverage>=7.11.0",
-    "debugpy>=1.8.17",
-    "django-debug-toolbar>=6.0.0",
-    "django-stubs>=5.2.7",
-    "django-types>=0.22.0",
-    "django-upgrade>=1.29.0",
-    "djangorestframework-stubs>=3.16.4",
-    "factory-boy>=3.3.3",
-    "fake-factory>=9999.9.9",
-    "mock>=5.2.0",
-    "pre-commit>=4.3.0",
-    "pre-commit-uv>=4.2.0",
-    "pytest>=8.4.2",
-    "pytest-django>=4.11.1",
-    "pyupgrade>=3.21.0",
-    "ruff>=0.14.1",
-    "ruff-lsp>=0.0.62",
-    "types-dj-database-url>=1.3.0.4",
+    "bandit",
+    "coverage",
+    "debugpy",
+    "django-debug-toolbar",
+    "django-stubs",
+    "django-types",
+    "django-upgrade",
+    "factory-boy",
+    "fake-factory",
+    "mock",
+    "pre-commit",
+    "pytest",
+    "pytest-django",
+    "pyupgrade",
+    "ruff",
+    "ruff-lsp",
+    "types-dj-database-url",
 ]
 [tool.pytest.ini_options]
 addopts = "--ignore=templates/"
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
 
 [tool.bandit]
 # Configuration for bandit security checking tool
 exclude_dirs = [
     "templates/",
     "**/test*.py"
+]
+[tool.pdm]
+distribution = false
+plugins = [
+    "pdm-bump",
+    "pdm-version",
+    "pdm-django",
+    "pdm-dotenv",
+    "pdm-shear"
 ]
