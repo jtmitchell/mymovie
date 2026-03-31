@@ -50,7 +50,7 @@ services:
     volumes:
       - ./src:/var/app
     environment:
-      - DJANGO_SETTINGS_MODULE=app.settings.production
+      - DJANGO_SETTINGS_MODULE=config.settings.production
       - DATABASE_URL=postgres://webapp:webapp1234@postgres.localhost:5432/webapp
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-secret_key}
     networks:
@@ -91,7 +91,7 @@ services:
         condition: service_started
     environment:
       - SERVER_PORT=8000
-      - DJANGO_SETTINGS_MODULE=app.settings.production
+      - DJANGO_SETTINGS_MODULE=config.settings.production
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-'dev-key'}
       - GOOGLE_PLUS_KEY=${GOOGLE_PLUS_KEY:-''}
       - GOOGLE_PLUS_SECRET=${GOOGLE_PLUS_SECRET:-''}

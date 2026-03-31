@@ -4,7 +4,7 @@ name: Run tests
 
 on:
   pull_request:
-  workflow_dispatch:  # Allows to trigger the workflow manually in GitHub UI
+  workflow_dispatch: # Allows to trigger the workflow manually in GitHub UI
 
 jobs:
   tests:
@@ -23,18 +23,17 @@ jobs:
 
     services:
       postgres:
-        image: bitnami/postgresql:16
+        image: docker.io/postgres:18
         ports:
           - 5432:5432
         options: --health-cmd="pg_isready -U postgres -h 127.0.0.1 -p 5432" --health-interval=10s --health-timeout=5s --health-retries=3
         env:
           ALLOW_EMPTY_PASSWORD: no
-          POSTGRESQL_POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
-          POSTGRESQL_DATABASE: ${{ env.DB_NAME }}
-          POSTGRESQL_USERNAME: ${{ env.DB_USER }}
-          POSTGRESQL_PASSWORD: ${{ env.DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.DB_NAME }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
       redis:
-        image: redis
+        image: docker.io/redis:7.2
         # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
@@ -48,17 +47,16 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
+      - name: Install pdm
+        uses: pdm-project/setup-pdm@v4
 
-      - name: Setup Python
-        run: uv python install
+      - name: Install dependencies
+        run: pdm install --dev --frozen-lockfile --plugins
 
       - name: Code checks
         run: |
-          uv run ruff check .
-          uv run pre-commit run bandit --all-files
+          pdm run ruff check .
+          pdm run pre-commit run bandit --all-files
 
       - name: Tests
-        run: |
-          uv run pytest
+        run: pdm run pytest

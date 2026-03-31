@@ -11,11 +11,16 @@ default:
 # Install python DEV dependancies
 install:
     pdm install --frozen-lockfile --plugins
+    pdm sync
     pdm run pre-commit install --hook-type pre-commit
 
 # pdm run a command
 run +options:
     pdm run {{ options }}
+
+# Django manage commands
+manage +options:
+    pdm run manage.py {{ options }}
 
 # Run the tests
 test +options="":

@@ -41,8 +41,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - BASE_IMAGE=ubuntu
     volumes:
       - ..:/workspace:cached
     depends_on:

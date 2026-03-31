@@ -1,8 +1,5 @@
-import datetime
-
-from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
-from jsonfield import JSONField  # type: ignore
 
 from movies.service import omdb
 
@@ -42,7 +39,6 @@ class MovieManager(models.Manager):
                 service_id=service_id,
             )
             service.service_data = movie_data
-            service.updated = datetime.date.today()
             service.save()
 
         return movie
@@ -62,7 +58,7 @@ class Movie(models.Model):
         blank=True,
         null=True,
     )
-    subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Watchlist")
+    subscribers = models.ManyToManyField(User, through="Watchlist")
 
     objects = MovieManager()
 
@@ -81,10 +77,13 @@ class ServiceMovie(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     service_id = models.CharField(max_length=50, db_index=True)
     service = models.CharField(
-        max_length=10, db_index=True, choices=SERVICE_CHOICES, default=SERVICE_OMDB
+        max_length=10,
+        db_index=True,
+        choices=SERVICE_CHOICES,
+        default=SERVICE_OMDB,
     )
-    service_data = JSONField(null=True, blank=True)
-    updated = models.DateField(null=True, blank=True, db_index=True)
+    service_data = models.JSONField(null=True, blank=True)
+    updated = models.DateField(auto_now=True, null=True, blank=True, db_index=True)
 
     class Meta:
         unique_together = ("service_id", "service")
@@ -102,7 +101,7 @@ class Watchlist(models.Model):
     """
 
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.movie.name}/{self.user.get_full_name()}"

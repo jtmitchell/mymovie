@@ -2,7 +2,7 @@
   "name": "MyMovie Server",
   "workspaceFolder": "/workspace",
   "dockerComposeFile": [
-    "docker-compose.yaml",
+    "docker-compose.yaml"
     // "../docker-compose.override.yaml",
   ],
   "service": "webapp",
@@ -20,34 +20,35 @@
     "443": {
       "label": "HTTPS",
       "protocol": "https",
-      "onAutoForward": "openBrowser",
+      "onAutoForward": "openBrowser"
     },
     "5678": {
       "label": "debugpy",
-      "onAutoForward": "silent",
-    },
+      "onAutoForward": "silent"
+    }
   },
 
-  // postCreateCommand runs once on container creation: sync deps, install hooks,
-  // and write PATH into ~/.profile (read by Zed) and ~/.bashrc (interactive shells)
-  "postCreateCommand": "pdm install --frozen-lockfile --plugins && pdm run pre-commit install && grep -qxF 'export PATH=\"/workspace/.venv/bin:$PATH\"' ~/.profile || echo 'export PATH=\"/workspace/.venv/bin:$PATH\"' | tee -a ~/.profile >> ~/.bashrc",
+  // postCreateCommand runs once on container creation: install pdm
+  "postCreateCommand": "pipx ensurepath && pipx install pdm && ~/.local/bin/pdm sync && ~/.local/bin/pdm run pre-commit install",
   // postStartCommand runs every time the container starts — re-syncs deps in case
   // pyproject.toml changed (e.g. after a git pull) without rebuilding the container
-  "postStartCommand": "pdm sync",
+  "postStartCommand": "~/.local/bin/pdm sync",
   "containerEnv": {
-    "DISPLAY": "dummy",
+    "DISPLAY": "dummy"
   },
   "remoteEnv": {
-    "PATH": "/home/vscode/.venv/bin:${containerEnv:PATH}",
+    "PATH": "/home/vscode/.local/bin:${containerEnv:PATH}"
   },
   "mounts": [
     "type=bind,source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly",
+    "type=bind,source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,readonly",
+    "type=bind,source=${localEnv:HOME}/.gitignore_global,target=/home/vscode/.gitignore_global,readonly"
   ],
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/va-h/devcontainers-features/difftastic:1": {},
-    "ghcr.io/jsburckhardt/devcontainer-features/just:1": {},
-    "ghcr.io/devcontainers-extra/features/pdm:2": {},
+    "ghcr.io/jsburckhardt/devcontainer-features/just:1": {}
+    // "ghcr.io/devcontainers-extra/features/pdm:2": {}
   },
   "customizations": {
     "vscode": {
@@ -65,7 +66,7 @@
         "tamasfe.even-better-toml",
         "typefox.open-collaboration-tools",
         "yzhang.markdown-all-in-one",
-        "detachhead.basedpyright",
+        "detachhead.basedpyright"
       ],
       "settings": {
         "python.testing.unittestEnabled": false,
@@ -74,10 +75,10 @@
           ".venv/**": true,
           "**/__pycache__/**": true,
           "**/.mypy_cache/**": true,
-          "**/.pytest_cache/**": true,
+          "**/.pytest_cache/**": true
         },
-        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
-      },
-    },
-  },
+        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python"
+      }
+    }
+  }
 }

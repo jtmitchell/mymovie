@@ -19,5 +19,5 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="hello_world/hello.html")),
+    path("", TemplateView.as_view(template_name="homepage/coming_soon.html")),
 ]

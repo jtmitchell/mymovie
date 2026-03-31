@@ -24,7 +24,7 @@ if __name__ == "__main__":
         port=8000,
         interface=Interfaces.WSGI,
         loop="uvloop",
-        process_name="granian [sample]",
+        process_name="granian [mymovie]",
         websockets=False,
         backpressure=10,
         # Number of worker processes (scale with CPU cores in production)
