@@ -1,11 +1,10 @@
 """Utility for sending email."""
 
 import regex as re
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
-from email_registry.conf import settings
 
 from .registry import registry
 
@@ -29,10 +28,7 @@ def send_mail(
     from_email: str | None = None,
     **email_kwargs,
 ):
-    email_kwargs = {
-        "from_email": from_email,
-        "recipients": recipients,
-    } | email_kwargs
+    email_kwargs = {"from_email": from_email, "recipients": recipients} | email_kwargs
 
     email_func = registry.get_email_func(identifier)
     email_kwargs = email_func(*email_args, **email_kwargs)
@@ -40,13 +36,13 @@ def send_mail(
     app_name, email_name = registry.get_app_and_email_name(identifier)
 
     if (from_email := email_kwargs.get("from_email", None)) is None:
-        from_email = settings.EMAILS_FROM_EMAIL
+        from_email = settings.FROM_EMAIL
 
     if (recipients := email_kwargs.get("recipients", None)) is None:
-        recipients = [x[1] for x in settings.EMAILS_MANAGERS]
+        recipients = [x[1] for x in settings.MANAGERS]
 
     if getattr(settings, "EMAIL_DEBUG", False):
-        recipients = [settings.EMAILS_ADMINS[0][1]]
+        recipients = [settings.ADMINS[0][1]]
 
     context = email_kwargs.get("context")
     subject = email_kwargs.get("subject")
@@ -82,7 +78,7 @@ def send_mail(
         subject=subject,
         body=plain_text,
         from_email=from_email,
-        reply_to=[settings.EMAILS_DEFAULT_NOREPLY_EMAIL],
+        reply_to=[settings.DEFAULT_NOREPLY_EMAIL],
         to=recipients,
         cc=cc_recipients,
         bcc=bcc_recipients,

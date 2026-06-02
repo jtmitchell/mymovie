@@ -1,28 +1,55 @@
-{% extends "admin/change_list.html" %}
-{% load django_htmx %}
+{% extends "admin/base_site.html" %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
-<a href="{% url 'admin:index' %}">Home</a>
-&rsaquo; <a href="{% url 'admin:app_list' app_label='email_registry' %}">Email Registry</a>
-&rsaquo; Preview
+  <a href="{% url 'admin:index' %}">Home</a>
+  &rsaquo; <a href="{% url 'admin:app_list' app_label='email_registry' %}">Email Registry</a>
+  &rsaquo; Emails
 </div>
 {% endblock %}
 
-{% block search %}{% endblock %}
-
-{% block result_list %}
-<div id="content-main">
-  <div class="row">
-    <ol>
-      {% for item in emails %}
-      <li>
-        <a href="{% url 'admin:preview_email' identifier=item %}">{{ item }}</a>
-      </li>
-      {% endfor %}
-    </ol>
+{% block content %}
+<div id="changelist" class="module">
+  <div class="results">
+    <table id="result_list">
+      <thead>
+        <tr>
+          <th scope="col">
+            <div class="text"><span>Identifier</span></div>
+            <div class="clear"></div>
+          </th>
+          <th scope="col">
+            <div class="text"><span>App</span></div>
+            <div class="clear"></div>
+          </th>
+          <th scope="col">
+            <div class="text"><span>Email name</span></div>
+            <div class="clear"></div>
+          </th>
+          <th scope="col">
+            <div class="text"><span>Description</span></div>
+            <div class="clear"></div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for email in emails %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+          <th class="field-identifier">
+            <a href="{% url 'admin:preview_email' identifier=email.identifier %}">{{ email.identifier }}</a>
+          </th>
+          <td class="field-app">{{ email.app }}</td>
+          <td class="field-name">{{ email.name }}</td>
+          <td class="field-description">{{ email.description }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4">No emails registered.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
+  <p class="paginator">{{ emails|length }} email{{ emails|length|pluralize }}</p>
 </div>
 {% endblock %}
-
-{% block pagination %}{% endblock %}
