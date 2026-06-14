@@ -2,7 +2,7 @@
   "name": "MyMovie Server",
   "workspaceFolder": "/workspace",
   // Before the container is created, ensure we have the personal override file in place.
-  "initializeCommand": "cp --update=none .devcontainer/docker-compose.personal.yml.template .devcontainer/docker-compose.personal.yml",
+  "initializeCommand": "cp --update=none .devcontainer/docker-compose.template.personal.yml .devcontainer/docker-compose.personal.yml",
   "dockerComposeFile": ["docker-compose.yml", "docker-compose.personal.yml"],
   "service": "devcontainer",
   "remoteUser": "vscode",
@@ -30,9 +30,6 @@
     // Install package requirements
     "setupEnvironment": "sudo chown -R $(whoami): ${containerWorkspaceFolder}/.venv /home/vscode/.cache && just install"
   },
-  // postStartCommand runs every time the container starts — re-syncs deps in case
-  // pyproject.toml changed (e.g. after a git pull) without rebuilding the container
-  "postStartCommand": "~/.local/bin/pdm sync",
   "containerEnv": {
     "DISPLAY": "dummy"
   },

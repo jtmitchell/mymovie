@@ -47,16 +47,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install pdm
-        uses: pdm-project/setup-pdm@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
 
-      - name: Install dependencies
-        run: pdm install --dev --frozen-lockfile --plugins
+      - name: Setup Python
+        run: uv python install
 
       - name: Code checks
         run: |
-          pdm run ruff check .
-          pdm run pre-commit run bandit --all-files
+          uv run ruff check .
+          uv run pre-commit run bandit --all-files
 
       - name: Tests
-        run: pdm run pytest
+        run: |
+          uv run pytest

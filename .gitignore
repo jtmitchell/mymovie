@@ -1,3 +1,4 @@
+.devcontainer/docker-compose.personal.yml
 .project
 .pydevproject
 .vscode/

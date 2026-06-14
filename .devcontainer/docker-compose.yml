@@ -10,7 +10,7 @@ services:
         condition: service_healthy # waits for pg_isready to pass
       redis:
         condition: service_started
-      mailhog:
+      mailpit:
         condition: service_started
     expose:
       - 8000

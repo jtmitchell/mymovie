@@ -1,7 +1,7 @@
 [project]
 name = "mymovie-server"
 version = "0.1.0"
-description = "Default template for PDM package"
+description = "Webapp to track movie releases from a wishlist, so you don't have to."
 readme = "README.md"
 requires-python = "==3.14.*"
 dependencies = [
