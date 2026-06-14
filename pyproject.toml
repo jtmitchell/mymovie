@@ -38,15 +38,22 @@ dev = [
     "fake-factory",
     "mock",
     "pre-commit",
+    "pre-commit-uv",
     "pytest",
     "pytest-django",
     "pyupgrade",
     "ruff",
     "ruff-lsp",
     "types-dj-database-url",
+    "djlint",
 ]
+
 [tool.pytest.ini_options]
-addopts = "--ignore=templates/"
+testpaths = ["src"]
+addopts = ["--ignore=templates/"]
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+markers = []
+
 
 [tool.basedpyright]
 typeCheckingMode = "standard"
@@ -55,14 +62,21 @@ typeCheckingMode = "standard"
 # Configuration for bandit security checking tool
 exclude_dirs = [
     "templates/",
-    "**/test*.py"
+    "**/test*.py",
+    "**/tests/",
+    "**/factories.py",
+    "conftest.py",
 ]
-[tool.pdm]
-distribution = false
-plugins = [
-    "pdm-bump",
-    "pdm-version",
-    "pdm-django",
-    "pdm-dotenv",
-    "pdm-shear"
-]
+
+
+[tool.djlint]
+profile = "django"
+indent = 4
+max_line_length = 120        # matches ruff
+max_attribute_length = 80
+preserve_blank_lines = true
+use_gitignore = true
+ignore = "H006,H021,H023,H030,H031,T003"              # meta keywords - not relevant for app templates
+
+[tool.djlint.per-file-ignores]
+"templates/components/*.html" = "H006"  # img width/height - cotton components often omit these

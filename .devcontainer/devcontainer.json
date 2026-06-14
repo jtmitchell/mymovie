@@ -1,21 +1,11 @@
 {
   "name": "MyMovie Server",
   "workspaceFolder": "/workspace",
-  "dockerComposeFile": [
-    "docker-compose.yaml"
-    // "../docker-compose.override.yaml",
-  ],
-  "service": "webapp",
+  // Before the container is created, ensure we have the personal override file in place.
+  "initializeCommand": "cp --update=none .devcontainer/docker-compose.personal.yml.template .devcontainer/docker-compose.personal.yml",
+  "dockerComposeFile": ["docker-compose.yml", "docker-compose.personal.yml"],
+  "service": "devcontainer",
   "remoteUser": "vscode",
-  // "build": {
-  //   "dockerfile": "Dockerfile",
-  //   "context": "..",
-  //   "args": {
-  //     "BASE_IMAGE": "ubuntu",
-  //   },
-  // },
-  "appPort": [443, 5678],
-  "forwardPorts": [443, 5678],
   "portsAttributes": {
     "443": {
       "label": "HTTPS",
@@ -25,11 +15,21 @@
     "5678": {
       "label": "debugpy",
       "onAutoForward": "silent"
+    },
+    "8000": {
+      "label": "Django Dev Server",
+      "onAutoForward": "notify"
+    },
+    "8025": {
+      "label": "Mailpit",
+      "onAutoForward": "notify"
     }
   },
-
-  // postCreateCommand runs once on container creation: install pdm
-  "postCreateCommand": "pipx ensurepath && pipx install pdm && ~/.local/bin/pdm sync && ~/.local/bin/pdm run pre-commit install",
+  "postCreateCommand": {
+    // Fix permissions on the volume mount; see https://github.com/microsoft/vscode-remote-release/issues/9931
+    // Install package requirements
+    "setupEnvironment": "sudo chown -R $(whoami): ${containerWorkspaceFolder}/.venv /home/vscode/.cache && just install"
+  },
   // postStartCommand runs every time the container starts — re-syncs deps in case
   // pyproject.toml changed (e.g. after a git pull) without rebuilding the container
   "postStartCommand": "~/.local/bin/pdm sync",
@@ -37,18 +37,25 @@
     "DISPLAY": "dummy"
   },
   "remoteEnv": {
-    "PATH": "/home/vscode/.local/bin:${containerEnv:PATH}"
+    "PATH": "${containerWorkspaceFolder}/.venv/bin:${containerEnv:PATH}",
+    "PRE_COMMIT_HOME": "/home/vscode/.cache/pre-commit",
+    "PRE_COMMIT_USE_UV": "1",
+    "UV_CACHE_DIR": "/home/vscode/.cache/uv"
   },
   "mounts": [
     "type=bind,source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly",
-    "type=bind,source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,readonly",
-    "type=bind,source=${localEnv:HOME}/.gitignore_global,target=/home/vscode/.gitignore_global,readonly"
+    "source=precommit-cache,target=/home/vscode/.cache/pre-commit,type=volume",
+    "source=my-project-uv-cache,target=/home/vscode/.cache/uv,type=volume"
   ],
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/va-h/devcontainers-features/difftastic:1": {},
-    "ghcr.io/jsburckhardt/devcontainer-features/just:1": {}
-    // "ghcr.io/devcontainers-extra/features/pdm:2": {}
+    "ghcr.io/jsburckhardt/devcontainer-features/just:1": {},
+    "ghcr.io/devcontainers-extra/features/curl-apt-get:1": {},
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {},
+    "ghcr.io/nlstn/devcontainer-features/psql:1": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "moby": false
+    }
   },
   "customizations": {
     "vscode": {
@@ -66,7 +73,8 @@
         "tamasfe.even-better-toml",
         "typefox.open-collaboration-tools",
         "yzhang.markdown-all-in-one",
-        "detachhead.basedpyright"
+        "detachhead.basedpyright",
+        "monosans.djlint"
       ],
       "settings": {
         "python.testing.unittestEnabled": false,
@@ -77,7 +85,7 @@
           "**/.mypy_cache/**": true,
           "**/.pytest_cache/**": true
         },
-        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python"
+        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python"
       }
     }
   }

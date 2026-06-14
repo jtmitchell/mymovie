@@ -22,7 +22,7 @@ repos:
       - id: validate-pyproject
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version. Keep this in sync with the venv installed version
-  rev: v0.15.6
+  rev: v0.15.17
   hooks:
     # Run the linter.
     - id: ruff

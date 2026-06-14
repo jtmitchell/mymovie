@@ -1,14 +1,47 @@
 services:
-  # SMTP server to capture outgoing emails
-  mailhog:
-    image: docker.io/mailhog/mailhog
-    logging:
-      driver: "none" # disable to verbose logs
-    entrypoint: ["/bin/sh", "-c", "MailHog &>/dev/null"]
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+    depends_on:
+      postgres:
+        condition: service_healthy # waits for pg_isready to pass
+      redis:
+        condition: service_started
+      mailhog:
+        condition: service_started
+    expose:
+      - 8000
+    ports:
+      - "5678:5678" # debug port
+    command: sleep infinity
+    environment:
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-config.settings.development}
+      - DATABASE_URL=postgres://webapp:webapp1234@postgres.localhost:5432/webapp
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-secret_key}
+    env_file:
+      - "../.env"
+      - "./devcontainer.env"
     networks:
       default:
         aliases:
-          - mailhog.localhost
+          - devcontainer.localhost
+
+    # SMTP server to capture outgoing emails
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+    environment:
+      - TZ=Pacific/Auckland
+      - MP_SMTP_AUTH_ACCEPT_ANY=1
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+    networks:
+      default:
+        aliases:
+          - mailpit.localhost
 
   redis:
     image: docker.io/redis:7.2
@@ -36,30 +69,3 @@ services:
       default:
         aliases:
           - postgres.localhost
-
-  webapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ..:/workspace:cached
-    depends_on:
-      postgres:
-        condition: service_healthy # waits for pg_isready to pass
-      redis:
-        condition: service_started
-      mailhog:
-        condition: service_started
-    expose:
-      - 8000
-    ports:
-      - "5678:5678" # debug port
-    command: sleep infinity
-    environment:
-      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-config.settings.development}
-      - DATABASE_URL=postgres://webapp:webapp1234@postgres.localhost:5432/webapp
-      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-secret_key}
-    networks:
-      default:
-        aliases:
-          - webapp.localhost

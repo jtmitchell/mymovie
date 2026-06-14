@@ -1,0 +1,10 @@
+# Personal overrides for devcontainer - safe to modify locally.
+services:
+  devcontainer:
+    #dns:
+    #  - 127.0.0.11
+    #  - 100.100.100.100
+    #  - 8.8.8.8
+    #volumes:
+    #  - ~/.continue:/home/vscode/.continue
+    {}

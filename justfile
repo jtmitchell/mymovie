@@ -10,45 +10,41 @@ default:
 
 # Install python DEV dependancies
 install:
-    pdm install --frozen-lockfile --plugins
-    pdm sync
-    pdm run pre-commit install --hook-type pre-commit
+    uv sync
+    uv run pre-commit install --hook-type pre-commit
 
-# pdm run a command
+# uv run a command
 run +options:
-    pdm run {{ options }}
+    uv run {{ options }}
 
 # Django manage commands
 manage +options:
-    pdm run manage.py {{ options }}
+    uv run manage.py {{ options }}
 
 # Run the tests
 test +options="":
-    pdm run pytest {{ options }}
+    uv run pytest {{ options }}
 
 # Build the docker image
 build target="production":
     docker build -f Dockerfile \
     --target production \
-    --label "org.opencontainers.image.revision"="v$(pdm version)" \
+    --label "org.opencontainers.image.revision"="v$(uv version)" \
     .
 
 version:
-    @pdm version
+    @uv version
 
-# Run the pdm bump version command
+# Run the uv bump version command
 bumpversion +options="":
-    pdm bump {{ options }}
+    uv version {{ options }}
 
 # Start new development cycle with new patch and release candidate
 bump_patch +options="":
-    pdm bump pre-release --pre alpha {{ options }}
-    git add pyproject.toml && git commit -m "Bump version to $(pdm version)"
+    uv version --bump rc {{ options }} --commit
     git push
 
 # Bump the version for a release. Make tag and commit
 bump_release +options="":
-    pdm bump release {{ options }}
-    git add pyproject.toml && git commit -m "Release v$(pdm version)"
-    git tag "v$(pdm version)"
+    uv version --bump stable {{ options }} --tag --commit
     git push && git push --tags
